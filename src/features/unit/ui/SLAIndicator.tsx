@@ -14,7 +14,6 @@ export function SLAIndicator({ dueAt, className, compact }: SLAIndicatorProps) {
     const deadline = parseISO(dueAt);
     const hoursLeft = differenceInHours(deadline, new Date());
 
-    // Determine status
     let status: "ok" | "warning" | "danger" = "ok";
     let text = `${hoursLeft}s kaldı`;
 
@@ -25,16 +24,16 @@ export function SLAIndicator({ dueAt, className, compact }: SLAIndicatorProps) {
         status = "warning";
     }
 
-    const badgeClass = {
-        ok: "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800",
-        warning: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800",
-        danger: "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800 animate-pulse"
+    const badgeStyles = {
+        ok: "bg-success/10 text-success-fg border-success/20",
+        warning: "bg-warning/10 text-warning-fg border-warning/20",
+        danger: "bg-danger/10 text-danger-fg border-danger/20 animate-pulse"
     };
 
     return (
         <span className={cn(
-            "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold border uppercase tracking-wide",
-            badgeClass[status],
+            "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium border",
+            badgeStyles[status],
             className
         )}>
             <Clock className="w-3 h-3" />

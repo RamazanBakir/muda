@@ -79,16 +79,38 @@ function MapCenterController({ center }: { center?: { lat: number, lng: number }
     return null;
 }
 
-// Custom Controls Component
+// Custom Controls Component - Blue themed
 function MapControls({ onLocate, onReset }: { onLocate: () => void, onReset: () => void }) {
     const t = useTranslations("map");
     return (
-        <div className="absolute bottom-6 right-4 z-[400] flex flex-col gap-2">
-            <Button size="icon" variant="secondary" className="h-10 w-10 shadow-md bg-white hover:bg-neutral-50 rounded-full" onClick={onLocate} title={t('locateMe')}>
-                <Locate className="h-5 w-5 text-neutral-700" />
+        <div className="absolute bottom-4 right-4 z-[400] flex flex-col gap-1.5">
+            <Button 
+                size="icon" 
+                variant="secondary" 
+                className={cn(
+                    "h-9 w-9 rounded-[var(--radius-md)]",
+                    "bg-[hsl(var(--surface))] border border-[hsl(var(--neutral-4))]",
+                    "shadow-[var(--shadow-md)]",
+                    "hover:bg-[hsl(var(--blue-1))] hover:border-[hsl(var(--blue-5))]"
+                )} 
+                onClick={onLocate} 
+                title={t('locateMe')}
+            >
+                <Locate className="h-4 w-4 text-[hsl(var(--blue-6))]" />
             </Button>
-            <Button size="icon" variant="secondary" className="h-10 w-10 shadow-md bg-white hover:bg-neutral-50 rounded-full" onClick={onReset} title={t('resetCenter')}>
-                <RotateCcw className="h-5 w-5 text-neutral-700" />
+            <Button 
+                size="icon" 
+                variant="secondary" 
+                className={cn(
+                    "h-9 w-9 rounded-[var(--radius-md)]",
+                    "bg-[hsl(var(--surface))] border border-[hsl(var(--neutral-4))]",
+                    "shadow-[var(--shadow-md)]",
+                    "hover:bg-[hsl(var(--blue-1))] hover:border-[hsl(var(--blue-5))]"
+                )} 
+                onClick={onReset} 
+                title={t('resetCenter')}
+            >
+                <RotateCcw className="h-4 w-4 text-[hsl(var(--blue-6))]" />
             </Button>
         </div>
     )
@@ -129,12 +151,17 @@ export function MapView({ className, center = MUG_CENTER, zoom = ZOOM_LEVEL, mar
     };
 
     return (
-        <div className={cn("relative z-0 h-full w-full overflow-hidden bg-muted", className)}>
+        <div className={cn(
+            "relative z-0 h-full w-full overflow-hidden",
+            "bg-[hsl(var(--neutral-2))]",
+            "rounded-[var(--radius-lg)]",
+            className
+        )}>
             <MapContainer
                 center={activeCenter}
                 zoom={zoom}
                 scrollWheelZoom={true}
-                className="h-full w-full outline-none"
+                className="h-full w-full outline-none rounded-[var(--radius-lg)]"
                 zoomControl={false}
             >
                 <TileLayer
@@ -177,4 +204,3 @@ export function MapView({ className, center = MUG_CENTER, zoom = ZOOM_LEVEL, mar
         </div>
     );
 }
-

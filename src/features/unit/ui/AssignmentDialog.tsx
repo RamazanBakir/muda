@@ -9,6 +9,7 @@ import { addHours, formatISO } from "date-fns";
 import { AssignedTo } from "@/features/issue/model/types";
 import { Search, User, Users } from "lucide-react";
 import { Input } from "@/shared/ui/input";
+import { cn } from "@/shared/lib/cn";
 
 interface AssignmentDialogProps {
     open: boolean;
@@ -28,11 +29,9 @@ export function AssignmentDialog({ open, onClose, onAssign, currentAssignee }: A
     const handleConfirm = () => {
         let assignee: AssignedTo | undefined;
 
-        // Find in teams
         const team = UNIT_DIRECTORY.teams.find(t => t.id === selectedId);
         if (team) assignee = { type: 'team', id: team.id, name: team.name };
 
-        // Find in persons
         const person = UNIT_DIRECTORY.persons.find(p => p.id === selectedId);
         if (person) assignee = { type: 'person', id: person.id, name: person.name };
 
@@ -51,9 +50,8 @@ export function AssignmentDialog({ open, onClose, onAssign, currentAssignee }: A
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                    {/* Search */}
                     <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-fg" />
                         <Input
                             placeholder="Ekip veya personel ara..."
                             className="pl-9"
@@ -62,36 +60,40 @@ export function AssignmentDialog({ open, onClose, onAssign, currentAssignee }: A
                         />
                     </div>
 
-                    {/* List */}
-                    <div className="h-[200px] overflow-y-auto border rounded-md divide-y">
-                        <div className="bg-muted/30 px-3 py-1 text-xs font-semibold text-muted-foreground sticky top-0">Ekipler</div>
+                    <div className="h-[200px] overflow-y-auto border border-border rounded-lg divide-y divide-border">
+                        <div className="bg-surface-2 px-3 py-1.5 text-xs font-medium text-muted-fg sticky top-0">Ekipler</div>
                         {filteredTeams.map(t => (
                             <button
                                 key={t.id}
-                                className={`w-full flex items-center gap-3 p-3 text-sm hover:bg-accent text-left ${selectedId === t.id ? 'bg-primary/10' : ''}`}
+                                className={cn(
+                                    "w-full flex items-center gap-3 p-3 text-sm hover:bg-surface-2 text-left transition-colors",
+                                    selectedId === t.id && "bg-secondary"
+                                )}
                                 onClick={() => setSelectedId(t.id)}
                             >
-                                <div className="bg-blue-100 p-2 rounded-full text-blue-700"><Users className="w-4 h-4" /></div>
-                                <span>{t.name}</span>
+                                <div className="bg-secondary p-2 rounded-lg text-primary"><Users className="w-4 h-4" /></div>
+                                <span className="text-fg">{t.name}</span>
                             </button>
                         ))}
 
-                        <div className="bg-muted/30 px-3 py-1 text-xs font-semibold text-muted-foreground sticky top-0">Personel</div>
+                        <div className="bg-surface-2 px-3 py-1.5 text-xs font-medium text-muted-fg sticky top-0">Personel</div>
                         {filteredPersons.map(p => (
                             <button
                                 key={p.id}
-                                className={`w-full flex items-center gap-3 p-3 text-sm hover:bg-accent text-left ${selectedId === p.id ? 'bg-primary/10' : ''}`}
+                                className={cn(
+                                    "w-full flex items-center gap-3 p-3 text-sm hover:bg-surface-2 text-left transition-colors",
+                                    selectedId === p.id && "bg-secondary"
+                                )}
                                 onClick={() => setSelectedId(p.id)}
                             >
-                                <div className="bg-slate-100 p-2 rounded-full text-slate-700"><User className="w-4 h-4" /></div>
-                                <span>{p.name}</span>
+                                <div className="bg-surface-2 p-2 rounded-lg text-muted-fg"><User className="w-4 h-4" /></div>
+                                <span className="text-fg">{p.name}</span>
                             </button>
                         ))}
                     </div>
 
-                    {/* SLA Selection */}
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Hedef Çözüm Süresi (SLA)</label>
+                        <label className="text-sm font-medium text-fg">Hedef Çözüm Süresi (SLA)</label>
                         <Select value={slaHours} onChange={(e) => setSlaHours(e.target.value)}>
                             {SLA_OPTIONS.map(opt => (
                                 <option key={opt.value} value={opt.value}>{opt.label}</option>

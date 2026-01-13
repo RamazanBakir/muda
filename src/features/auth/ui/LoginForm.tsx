@@ -82,53 +82,53 @@ export function LoginForm() {
     };
 
     return (
-        <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex flex-col gap-4">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-fg/60 ml-1">
+        <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex flex-col gap-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-fg ml-1">
                     Giriş Yöntemi Seçin
                 </span>
-                <div className="flex bg-surface-2 p-1.5 rounded-[20px] w-full border-2 border-border/20 shadow-inner">
+                <div className="flex bg-surface-2 p-1 rounded-xl w-full border border-border">
                     {(['mukhtar', 'unit', 'call_center'] as UserRole[]).map(r => (
                         <button
                             key={r}
                             type="button"
                             onClick={() => handleRoleChange(r)}
                             className={cn(
-                                "flex-1 flex items-center justify-center gap-2 py-3 text-[10px] font-black rounded-2xl transition-all duration-500 uppercase tracking-widest cursor-pointer",
+                                "flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 cursor-pointer",
                                 role === r
-                                    ? "bg-white dark:bg-neutral-700 shadow-xl shadow-neutral-200 dark:shadow-black/40 text-primary translate-y-[-1px]"
-                                    : "text-muted-fg hover:text-neutral-600 dark:hover:text-neutral-300"
+                                    ? "bg-surface shadow-md text-primary"
+                                    : "text-muted-fg hover:text-fg"
                             )}
                         >
-                            {r === 'mukhtar' && <Shield size={12} strokeWidth={3} />}
-                            {r === 'unit' && <User size={12} strokeWidth={3} />}
-                            {r === 'call_center' && <Headphones size={12} strokeWidth={3} />}
+                            {r === 'mukhtar' && <Shield size={14} strokeWidth={2.5} />}
+                            {r === 'unit' && <User size={14} strokeWidth={2.5} />}
+                            {r === 'call_center' && <Headphones size={14} strokeWidth={2.5} />}
                             {tr(r)}
                         </button>
                     ))}
                 </div>
             </div>
 
-            <div className="space-y-8">
-                <div className="space-y-2">
-                    <h3 className="text-3xl font-black tracking-tight text-neutral-900 dark:text-neutral-50 leading-none">
+            <div className="space-y-6">
+                <div className="space-y-1.5">
+                    <h3 className="text-2xl font-bold tracking-tight text-fg leading-tight">
                         {t('loginTitle')}
                     </h3>
-                    <p className="text-base text-muted-fg font-medium opacity-80">
+                    <p className="text-sm text-muted-fg leading-relaxed">
                         {role === 'mukhtar' && t('mukhtarDesc')}
                         {role === 'unit' && t('unitDesc')}
                         {role === 'call_center' && t('callCenterDesc')}
                     </p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-6">
+                <form onSubmit={handleLogin} className="space-y-5">
                     {role === 'mukhtar' && (
                         <FormField label={t('usernameLabel')} required>
                             <Input
                                 placeholder="mukhtar_kod"
                                 value={formData.username || ''}
                                 onChange={e => setFormData({ ...formData, username: e.target.value })}
-                                className="h-14 rounded-2xl text-lg font-bold"
+                                className="h-12 rounded-xl text-base font-medium"
                                 required
                             />
                         </FormField>
@@ -139,7 +139,7 @@ export function LoginForm() {
                                 placeholder="UNIT-XXX"
                                 value={formData.code || ''}
                                 onChange={e => setFormData({ ...formData, code: e.target.value })}
-                                className="h-14 rounded-2xl text-lg font-bold"
+                                className="h-12 rounded-xl text-base font-medium"
                                 required
                             />
                         </FormField>
@@ -150,7 +150,7 @@ export function LoginForm() {
                                 placeholder="OP-XX"
                                 value={formData.operatorId || ''}
                                 onChange={e => setFormData({ ...formData, operatorId: e.target.value })}
-                                className="h-14 rounded-2xl text-lg font-bold"
+                                className="h-12 rounded-xl text-base font-medium"
                                 required
                             />
                         </FormField>
@@ -162,19 +162,19 @@ export function LoginForm() {
                             placeholder="••••••"
                             value={formData.password || ''}
                             onChange={e => setFormData({ ...formData, password: e.target.value })}
-                            className="h-14 rounded-2xl text-lg font-bold"
+                            className="h-12 rounded-xl text-base font-medium"
                             required
                         />
                     </FormField>
 
                     {error && (
-                        <div className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-danger bg-danger/5 p-5 rounded-2xl animate-in shake-1 border-2 border-danger/10">
-                            <Lock size={16} strokeWidth={3} />
+                        <div className="flex items-center gap-3 text-sm font-semibold text-danger bg-danger/5 p-4 rounded-xl border border-danger/10">
+                            <Lock size={16} strokeWidth={2.5} />
                             {error}
                         </div>
                     )}
 
-                    <Button type="submit" size="lg" className="w-full h-14 rounded-2xl text-sm font-black uppercase tracking-[0.2em] shadow-2xl shadow-primary/20 hover:scale-[1.02] transition-all" isLoading={loading}>
+                    <Button type="submit" size="lg" className="w-full h-12 rounded-xl text-sm font-semibold shadow-lg shadow-primary/15 hover:shadow-xl hover:shadow-primary/20 transition-all" isLoading={loading}>
                         {t('submit')}
                     </Button>
                 </form>

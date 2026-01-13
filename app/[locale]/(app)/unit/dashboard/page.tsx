@@ -13,7 +13,49 @@ import { useRouter } from "next/navigation";
 import { StatusBadge, PriorityBadge } from "@/shared/ui/badge/status-badge";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
-import { ArrowRight, BellRing } from "lucide-react";
+import { ArrowRight, BellRing, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { cn } from "@/shared/lib/cn";
+
+interface StatCardProps {
+    title: string;
+    value: number;
+    description: string;
+    variant: 'primary' | 'danger' | 'success';
+    icon: React.ReactNode;
+}
+
+function StatCard({ title, value, description, variant, icon }: StatCardProps) {
+    const styles = {
+        primary: "bg-secondary border-primary/10",
+        danger: "bg-danger/5 border-danger/10",
+        success: "bg-success/5 border-success/10"
+    };
+    const titleStyles = {
+        primary: "text-primary",
+        danger: "text-danger",
+        success: "text-success"
+    };
+    const iconStyles = {
+        primary: "text-primary",
+        danger: "text-danger",
+        success: "text-success"
+    };
+
+    return (
+        <Card className={cn("border transition-all hover:shadow-md", styles[variant])}>
+            <CardHeader className="pb-2">
+                <CardTitle className={cn("text-xs font-semibold uppercase tracking-wider flex items-center gap-2", titleStyles[variant])}>
+                    <span className={iconStyles[variant]}>{icon}</span>
+                    {title}
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="text-3xl font-bold text-fg">{value}</div>
+                <p className="text-xs text-muted-fg mt-1">{description}</p>
+            </CardContent>
+        </Card>
+    );
+}
 
 export default function UnitDashboardPage() {
     const { session } = useSession();
@@ -23,7 +65,7 @@ export default function UnitDashboardPage() {
 
     useEffect(() => {
         if (session && session.role !== 'unit') {
-            router.push('/dashboard'); // protect route
+            router.push('/dashboard');
             return;
         }
 
@@ -34,76 +76,60 @@ export default function UnitDashboardPage() {
                 critical: issues.filter(i => i.priority === 'high' && i.status !== 'resolved').length,
                 resolved: issues.filter(i => i.status === 'resolved').length
             });
-            // Sort by date desc and take 5
             const recent = [...issues].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
             setRecentIssues(recent);
         };
         load();
-        const interval = setInterval(load, 10000); // Poll for updates
+        const interval = setInterval(load, 10000);
         return () => clearInterval(interval);
     }, [session]);
 
     if (!session || session.role !== 'unit') return null;
 
     return (
-        <Container className="space-y-8 animate-in fade-in pb-12">
+        <Container className="space-y-6 animate-in fade-in pb-12">
             <PageHeader
-                title={`${session.name}`}
+                title={session.name}
                 description="Birim Operasyon Paneli"
                 actions={
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={() => router.push('/unit/analytics')}>Analizler</Button>
-                        <Button onClick={() => router.push('/map')}>Harita & Canlı Takip</Button>
+                        <Button variant="outline" size="sm" onClick={() => router.push('/unit/analytics')}>Analizler</Button>
+                        <Button size="sm" onClick={() => router.push('/map')}>Harita & Canlı Takip</Button>
                     </div>
                 }
             />
 
-            {/* KPI Cards */}
             <div className="grid gap-4 md:grid-cols-3">
-                <Card className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/10 dark:to-transparent border-blue-100 dark:border-blue-800 shadow-sm transition-all hover:shadow-md">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-semibold uppercase text-blue-700 dark:text-blue-300 tracking-wider">Açık İşler</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-4xl font-bold text-slate-800 dark:text-slate-100">{stats.open}</div>
-                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                            Müdahale/Çözüm bekleyen
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card className="bg-gradient-to-br from-red-50 to-white dark:from-red-900/10 dark:to-transparent border-red-100 dark:border-red-800 shadow-sm transition-all hover:shadow-md">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-semibold uppercase text-red-700 dark:text-red-300 tracking-wider">Kritik & Acil</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-4xl font-bold text-slate-800 dark:text-slate-100">{stats.critical}</div>
-                        <p className="text-xs text-muted-foreground mt-1 text-red-600 dark:text-red-400 font-medium">
-                            Öncelikli aksiyon gerekli
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card className="bg-gradient-to-br from-green-50 to-white dark:from-green-900/10 dark:to-transparent border-green-100 dark:border-green-800 shadow-sm transition-all hover:shadow-md">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-semibold uppercase text-green-700 dark:text-green-300 tracking-wider">Tamamlanan</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-4xl font-bold text-slate-800 dark:text-slate-100">{stats.resolved}</div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            Toplam çözülen talep
-                        </p>
-                    </CardContent>
-                </Card>
+                <StatCard
+                    title="Açık İşler"
+                    value={stats.open}
+                    description="Müdahale/Çözüm bekleyen"
+                    variant="primary"
+                    icon={<Clock className="w-3.5 h-3.5" />}
+                />
+                <StatCard
+                    title="Kritik & Acil"
+                    value={stats.critical}
+                    description="Öncelikli aksiyon gerekli"
+                    variant="danger"
+                    icon={<AlertTriangle className="w-3.5 h-3.5" />}
+                />
+                <StatCard
+                    title="Tamamlanan"
+                    value={stats.resolved}
+                    description="Toplam çözülen talep"
+                    variant="success"
+                    icon={<CheckCircle className="w-3.5 h-3.5" />}
+                />
             </div>
 
-            <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
-                {/* Quick List - Expanded to take more space */}
-                <Card className="md:col-span-2 lg:col-span-3 h-full flex flex-col border-slate-200 dark:border-slate-800 shadow-sm">
-                    <CardHeader className="border-b bg-muted/5 pb-3">
+            <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+                <Card className="md:col-span-2 lg:col-span-3 h-full flex flex-col">
+                    <CardHeader className="border-b border-border pb-3">
                         <div className="flex items-center justify-between">
                             <div>
-                                <CardTitle className="text-lg">Son Gelen İş Akışı</CardTitle>
-                                <CardDescription>Birim sorumluluğuna atanan en yeni talepler.</CardDescription>
+                                <CardTitle className="text-base font-semibold">Son Gelen İş Akışı</CardTitle>
+                                <CardDescription className="text-sm">Birim sorumluluğuna atanan en yeni talepler.</CardDescription>
                             </div>
                             <Button variant="ghost" size="sm" onClick={() => router.push('/issues')} className="text-xs">
                                 Tümünü Listele <ArrowRight className="w-3 h-3 ml-1" />
@@ -113,26 +139,26 @@ export default function UnitDashboardPage() {
                     <CardContent className="flex-1 p-0">
                         <div className="divide-y divide-border">
                             {recentIssues.length === 0 ? (
-                                <div className="p-8 text-center text-muted-foreground italic">Henüz kayıt yok.</div>
+                                <div className="p-8 text-center text-muted-fg italic text-sm">Henüz kayıt yok.</div>
                             ) : (
                                 recentIssues.map(i => (
-                                    <div key={i.id} className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors group cursor-pointer" onClick={() => router.push(`/issues/${i.id}`)}>
+                                    <div key={i.id} className="flex items-center justify-between p-4 hover:bg-surface-2 transition-colors group cursor-pointer" onClick={() => router.push(`/issues/${i.id}`)}>
                                         <div className="flex gap-3 items-start">
-                                            <div className="mt-1">
+                                            <div className="mt-0.5">
                                                 <StatusBadge status={i.status} showIcon />
                                             </div>
                                             <div>
-                                                <div className="font-medium text-sm group-hover:text-primary transition-colors">{i.title}</div>
-                                                <div className="text-xs text-muted-foreground mt-0.5 flex gap-2 items-center">
+                                                <div className="font-medium text-sm text-fg group-hover:text-primary transition-colors">{i.title}</div>
+                                                <div className="text-xs text-muted-fg mt-0.5 flex gap-2 items-center">
                                                     <span>{i.location.district} / {i.location.neighborhood}</span>
-                                                    <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                                    <span className="w-1 h-1 rounded-full bg-border"></span>
                                                     <span>{formatDistanceToNow(new Date(i.createdAt), { addSuffix: true, locale: tr })}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="flex flex-col items-end gap-1">
                                             <PriorityBadge priority={i.priority} />
-                                            <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded">{i.id.slice(-6)}</span>
+                                            <span className="text-[10px] text-muted-fg font-mono bg-surface-2 px-1.5 py-0.5 rounded">{i.id.slice(-6)}</span>
                                         </div>
                                     </div>
                                 ))
@@ -141,24 +167,23 @@ export default function UnitDashboardPage() {
                     </CardContent>
                 </Card>
 
-                {/* Unit Actions / Info */}
-                <Card className="h-full border-amber-200 dark:border-amber-900 shadow-sm flex flex-col bg-amber-50/30 dark:bg-amber-950/20">
+                <Card className="h-full flex flex-col bg-warning/5 border-warning/10">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-base flex items-center gap-2 text-amber-900 dark:text-amber-100">
-                            <BellRing className="w-4 h-4 text-amber-600" />
+                        <CardTitle className="text-sm font-semibold flex items-center gap-2 text-warning-fg">
+                            <BellRing className="w-4 h-4 text-warning" />
                             Duyurular & Emirler
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4 pt-2">
-                        <div className="bg-white/60 dark:bg-black/20 p-3 rounded border border-amber-100 dark:border-amber-900 text-sm text-amber-900 dark:text-amber-100/90 shadow-sm">
-                            <strong>Nöbetçi Ekip:</strong> Bu hafta sonu su arıza ekibi tam kadro sahada olacaktır.
+                    <CardContent className="space-y-3 pt-2">
+                        <div className="bg-surface p-3 rounded-lg border border-border text-sm text-fg">
+                            <strong className="text-fg">Nöbetçi Ekip:</strong> <span className="text-muted-fg">Bu hafta sonu su arıza ekibi tam kadro sahada olacaktır.</span>
                         </div>
-                        <div className="bg-white/60 dark:bg-black/20 p-3 rounded border border-amber-100 dark:border-amber-900 text-sm text-amber-900 dark:text-amber-100/90 shadow-sm">
-                            <strong>Sistem:</strong> Canlı takip modülü aktiftir. Lütfen tabletlerinizi "Sürekli Konum" moduna alınız.
+                        <div className="bg-surface p-3 rounded-lg border border-border text-sm text-fg">
+                            <strong className="text-fg">Sistem:</strong> <span className="text-muted-fg">Canlı takip modülü aktiftir. Lütfen tabletlerinizi "Sürekli Konum" moduna alınız.</span>
                         </div>
                     </CardContent>
-                    <CardFooter className="mt-auto border-t border-amber-200/50 pt-4">
-                        <Button size="sm" variant="outline" className="w-full bg-white/50 hover:bg-white border-amber-200 text-amber-800">Arşiv</Button>
+                    <CardFooter className="mt-auto border-t border-border pt-4">
+                        <Button size="sm" variant="outline" className="w-full">Arşiv</Button>
                     </CardFooter>
                 </Card>
             </div>

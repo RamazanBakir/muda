@@ -2,7 +2,7 @@
 
 import { cn } from "@/shared/lib/cn";
 import { useTranslations } from "next-intl";
-import { Info } from "lucide-react";
+import { Inbox } from "lucide-react";
 
 interface EmptyStateProps {
     title?: string;
@@ -16,30 +16,37 @@ export function EmptyState({ title, description, className, icon, action }: Empt
     const t = useTranslations("common");
 
     return (
-        <div className={cn("flex flex-col items-center justify-center p-12 md:p-24 text-center animate-in fade-in duration-700", className)}>
-            <div className="flex h-32 w-32 items-center justify-center rounded-[40px] bg-surface-2 border-4 border-white dark:border-neutral-900 shadow-2xl mb-10 text-primary transition-transform hover:rotate-3">
-                {icon || <Info size={48} strokeWidth={3} />}
+        <div className={cn(
+            "flex flex-col items-center justify-center",
+            "p-8 md:p-12 text-center",
+            className
+        )}>
+            {/* Icon Container - Blue accent */}
+            <div className={cn(
+                "flex h-14 w-14 items-center justify-center",
+                "rounded-[var(--radius-lg)] mb-4",
+                "bg-[hsl(var(--blue-1))]",
+                "text-[hsl(var(--blue-6))]"
+            )}>
+                {icon || <Inbox size={28} strokeWidth={1.5} />}
             </div>
 
-            <div className="space-y-4 max-w-xl">
-                <h3 className="text-3xl md:text-4xl font-black tracking-tight text-neutral-900 dark:text-neutral-50">
+            <div className="space-y-2 max-w-sm">
+                <h3 className="text-lg font-semibold text-[hsl(var(--neutral-11))]">
                     {title || t('empty')}
                 </h3>
                 {description && (
-                    <p className="text-lg md:text-xl text-muted-fg leading-relaxed font-medium opacity-80">
+                    <p className="text-sm text-[hsl(var(--neutral-7))] leading-relaxed">
                         {description}
                     </p>
                 )}
             </div>
 
             {action && (
-                <div className="mt-12 scale-110">
+                <div className="mt-4">
                     {action}
                 </div>
             )}
         </div>
     );
 }
-
-
-

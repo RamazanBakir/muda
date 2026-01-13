@@ -12,21 +12,22 @@ export function FormField({ label, error, hint, required, className, children, .
     return (
         <div className={cn("space-y-1.5", className)} {...props}>
             {label && (
-                <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-1 px-0.5">
+                <label className="text-sm font-medium text-[hsl(var(--neutral-9))] flex items-center gap-1">
                     {label}
-                    {required && <span className="text-danger">*</span>}
+                    {required && <span className="text-[hsl(var(--red-6))]">*</span>}
                 </label>
             )}
             <div className="relative">
                 {children}
             </div>
-            {hint && !error && <p className="text-xs text-muted-fg px-1">{hint}</p>}
+            {hint && !error && (
+                <p className="text-xs text-[hsl(var(--neutral-6))]">{hint}</p>
+            )}
             {error && (
-                <p className="text-sm font-medium text-danger px-1 animate-in fade-in slide-in-from-top-1">
+                <p className="text-xs font-medium text-[hsl(var(--red-6))]">
                     {error}
                 </p>
             )}
         </div>
     );
 }
-

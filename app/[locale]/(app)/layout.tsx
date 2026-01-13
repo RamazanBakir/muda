@@ -17,7 +17,7 @@ import {
     ClipboardList,
     BarChart3,
     Inbox,
-    Globe
+    Home
 } from "lucide-react";
 
 const DevToolsWrapper = dynamic(
@@ -57,21 +57,29 @@ export default function AppLayout({
 
     return (
         <DemoProvider>
-            <div className="min-h-screen bg-bg flex flex-col font-sans text-fg pb-20 md:pb-0">
+            <div className="min-h-screen bg-[hsl(var(--bg))] flex flex-col text-[hsl(var(--fg))] pb-16 md:pb-0">
                 <DemoIndicator />
-                <header className="sticky top-0 z-50 w-full border-b-2 border-border/30 bg-surface/90 backdrop-blur-xl shadow-sm">
-                    <Container className="flex h-20 items-center justify-between">
-                        <div className="flex items-center gap-10">
-                            <Link href="/dashboard" className="flex items-center gap-3 group">
-                                <div className="bg-primary text-primary-fg p-2 rounded-xl shadow-lg shadow-primary/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                
+                {/* Header - Clean, professional */}
+                <header className={cn(
+                    "sticky top-0 z-50 w-full",
+                    "border-b border-[hsl(var(--neutral-3))]",
+                    "bg-[hsl(var(--surface)/0.95)] backdrop-blur-sm"
+                )}>
+                    <Container className="flex h-14 items-center justify-between">
+                        <div className="flex items-center gap-6 lg:gap-8">
+                            {/* Logo */}
+                            <Link href="/dashboard" className="flex items-center gap-2 transition-opacity hover:opacity-80">
+                                <div className="bg-[hsl(var(--blue-6))] text-white p-1.5 rounded-lg">
+                                    <Home size={16} strokeWidth={2} />
                                 </div>
-                                <span className="font-black text-xl tracking-tight text-neutral-900 dark:text-neutral-50 uppercase italic">
-                                    MUDA<span className="text-primary not-italic">.</span>
+                                <span className="font-semibold text-base text-[hsl(var(--neutral-11))] hidden sm:block">
+                                    MUDA
                                 </span>
                             </Link>
 
-                            <nav className="hidden md:flex items-center gap-8">
+                            {/* Desktop Navigation */}
+                            <nav className="hidden md:flex items-center gap-1">
                                 {navItems.map((item) => {
                                     const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
                                     const Icon = item.icon;
@@ -80,35 +88,39 @@ export default function AppLayout({
                                             key={item.href}
                                             href={item.href}
                                             className={cn(
-                                                "group flex items-center gap-2 text-sm font-bold transition-all hover:text-primary relative py-2",
-                                                isActive ? "text-primary" : "text-muted-fg"
+                                                "flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)]",
+                                                "text-sm font-medium transition-colors duration-150",
+                                                isActive 
+                                                    ? "text-[hsl(var(--blue-7))] bg-[hsl(var(--blue-1))]" 
+                                                    : "text-[hsl(var(--neutral-7))] hover:text-[hsl(var(--neutral-9))] hover:bg-[hsl(var(--neutral-2))]"
                                             )}
                                         >
-                                            <Icon className={cn("w-4 h-4 transition-transform group-hover:scale-110", isActive ? "text-primary" : "opacity-60")} />
+                                            <Icon className="w-4 h-4" />
                                             {item.label}
-                                            {isActive && (
-                                                <span className="absolute -bottom-[26px] left-0 right-0 h-1 bg-primary rounded-t-full shadow-[0_-2px_8px_rgba(var(--primary-600),0.4)]" />
-                                            )}
                                         </Link>
                                     )
                                 })}
                             </nav>
                         </div>
 
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1.5 mr-2">
-                                <LanguageSwitcher />
-                            </div>
-                            <div className="h-6 w-px bg-border/60 mx-1" />
+                        {/* Right side actions */}
+                        <div className="flex items-center gap-2">
+                            <LanguageSwitcher />
+                            <div className="h-4 w-px bg-[hsl(var(--neutral-3))] mx-1 hidden md:block" />
                             <ActivityButton />
                             <RoleSwitcher />
                         </div>
                     </Container>
                 </header>
 
-                <div className="md:hidden fixed bottom-6 left-6 right-6 h-16 bg-neutral-900/90 backdrop-blur-2xl z-50 rounded-2xl shadow-2xl border border-white/10 px-6">
-                    <div className="flex items-center justify-between h-full">
-                        {navItems.map((item) => {
+                {/* Mobile Bottom Navigation */}
+                <div className={cn(
+                    "md:hidden fixed bottom-0 left-0 right-0 h-14 z-50",
+                    "bg-[hsl(var(--surface))] border-t border-[hsl(var(--neutral-3))]",
+                    "px-4 safe-area-inset-bottom"
+                )}>
+                    <div className="flex items-center justify-around h-full">
+                        {navItems.slice(0, 4).map((item) => {
                             const isActive = pathname === item.href;
                             const Icon = item.icon;
                             return (
@@ -116,14 +128,15 @@ export default function AppLayout({
                                     key={item.href}
                                     href={item.href}
                                     className={cn(
-                                        "flex flex-col items-center justify-center gap-1 transition-all rounded-xl relative p-2",
-                                        isActive ? "text-primary scale-110" : "text-white/60 hover:text-white"
+                                        "flex flex-col items-center justify-center gap-0.5",
+                                        "transition-colors duration-150 p-2",
+                                        isActive 
+                                            ? "text-[hsl(var(--blue-6))]" 
+                                            : "text-[hsl(var(--neutral-6))]"
                                     )}
                                 >
-                                    <Icon className="w-6 h-6" />
-                                    {isActive && (
-                                        <div className="absolute -bottom-1 w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_var(--primary)]" />
-                                    )}
+                                    <Icon className="w-5 h-5" />
+                                    <span className="text-[10px] font-medium">{item.label}</span>
                                 </Link>
                             )
                         })}
@@ -131,7 +144,8 @@ export default function AppLayout({
                     </div>
                 </div>
 
-                <main className="flex-1 w-full pt-6">
+                {/* Main Content */}
+                <main className="flex-1 w-full py-4 md:py-6">
                     {children}
                 </main>
                 <DevToolsWrapper />
@@ -155,11 +169,9 @@ function LanguageSwitcher() {
             variant="ghost"
             size="sm"
             onClick={toggleLanguage}
-            className="text-[10px] font-black w-8 h-8 rounded-lg hover:bg-primary/10 hover:text-primary border border-border/40"
+            className="text-xs font-medium w-8 h-8"
         >
             {locale.toUpperCase()}
         </Button>
     );
 }
-
-

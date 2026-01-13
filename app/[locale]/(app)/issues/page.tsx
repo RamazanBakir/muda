@@ -16,6 +16,8 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { Input } from "@/shared/ui/input";
 import { Chip } from "@/shared/ui/chip";
 import { useTranslations } from "next-intl";
+import { cn } from "@/shared/lib/cn";
+import { Search } from "lucide-react";
 
 export default function IssuesPage() {
     const { session } = useSession();
@@ -82,11 +84,11 @@ export default function IssuesPage() {
                 description={getPageDescription()}
             />
 
-            <div className="flex flex-col lg:flex-row gap-6 mb-8">
+            <div className="flex flex-col lg:flex-row gap-6">
                 {/* Filters Panel */}
-                <div className="lg:w-64 flex-shrink-0 space-y-6">
-                    <div className="space-y-3">
-                        <label className="text-sm font-semibold text-foreground">{ti('searchLabel')}</label>
+                <div className="lg:w-56 flex-shrink-0 space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-[hsl(var(--neutral-9))]">{ti('searchLabel')}</label>
                         <div className="relative">
                             <Input
                                 placeholder={ti('searchPlaceholder')}
@@ -94,25 +96,25 @@ export default function IssuesPage() {
                                 onChange={(e) => setSearch(e.target.value)}
                                 className="pl-9"
                             />
-                            <svg xmlns="http://www.w3.org/2000/svg" className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(var(--neutral-6))]" />
                         </div>
                     </div>
 
-                    <div className="space-y-3">
-                        <label className="text-sm font-semibold text-foreground">{ti('statusLabel')}</label>
-                        <div className="flex flex-wrap gap-2">
-                            <Chip active={statusFilter === null} onClick={() => setStatusFilter(null)} className="w-full justify-center">{ti('allFilter')}</Chip>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-[hsl(var(--neutral-9))]">{ti('statusLabel')}</label>
+                        <div className="flex flex-wrap gap-1.5">
+                            <Chip active={statusFilter === null} onClick={() => setStatusFilter(null)}>{ti('allFilter')}</Chip>
                             {statuses.map(s => (
-                                <Chip key={s} active={statusFilter === s} onClick={() => setStatusFilter(s)} className="w-full justify-center">
+                                <Chip key={s} active={statusFilter === s} onClick={() => setStatusFilter(s)}>
                                     {t(`status.${s}`)}
                                 </Chip>
                             ))}
                         </div>
                     </div>
 
-                    <div className="space-y-3">
-                        <label className="text-sm font-semibold text-foreground">{ti('priorityLabel')}</label>
-                        <div className="flex flex-wrap gap-2">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-[hsl(var(--neutral-9))]">{ti('priorityLabel')}</label>
+                        <div className="flex flex-wrap gap-1.5">
                             <Chip active={priorityFilter === null} onClick={() => setPriorityFilter(null)}>{ti('allFilter')}</Chip>
                             {priorities.map(p => (
                                 <Chip key={p} active={priorityFilter === p} onClick={() => setPriorityFilter(p)}>
@@ -126,12 +128,12 @@ export default function IssuesPage() {
                 {/* List Grid */}
                 <div className="flex-1">
                     {loading ? (
-                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                             {[1, 2, 3, 4, 5, 6].map(i => (
-                                <div key={i} className="flex flex-col space-y-3 p-4 border rounded-xl bg-white">
-                                    <Skeleton className="h-[20px] w-3/4 rounded-full" />
-                                    <Skeleton className="h-[100px] w-full rounded-xl" />
-                                    <Skeleton className="h-4 w-1/2" />
+                                <div key={i} className="flex flex-col space-y-3 p-4 border border-[hsl(var(--neutral-4))] rounded-[var(--radius-lg)] bg-[hsl(var(--surface))]">
+                                    <Skeleton className="h-4 w-3/4" />
+                                    <Skeleton className="h-20 w-full" />
+                                    <Skeleton className="h-3 w-1/2" />
                                 </div>
                             ))}
                         </div>
@@ -139,10 +141,10 @@ export default function IssuesPage() {
                         <EmptyState
                             title={ti('emptyTitle')}
                             description={ti('emptyDesc')}
-                            className="bg-muted/10 border-2 border-dashed border-muted rounded-xl bg-white"
+                            className="border-2 border-dashed border-[hsl(var(--neutral-4))] rounded-[var(--radius-lg)] bg-[hsl(var(--surface))]"
                         />
                     ) : (
-                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                             {filteredIssues.map(issue => (
                                 <IssueCard key={issue.id} issue={issue} />
                             ))}
@@ -153,4 +155,3 @@ export default function IssuesPage() {
         </Container>
     );
 }
-

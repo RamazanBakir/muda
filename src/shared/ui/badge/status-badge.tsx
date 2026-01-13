@@ -20,7 +20,7 @@ interface StatusBadgeProps {
     showIcon?: boolean;
 }
 
-const STATUS_CONFIG: Record<IssueStatus, { variant: "default" | "secondary" | "success" | "warning" | "outline", icon: any }> = {
+const STATUS_CONFIG: Record<IssueStatus, { variant: "default" | "secondary" | "success" | "warning" | "outline", icon: React.ComponentType<{ className?: string }> }> = {
     created: { variant: "outline", icon: CircleDot },
     triaged: { variant: "secondary", icon: Clock },
     in_progress: { variant: "warning", icon: AlertCircle },
@@ -33,8 +33,8 @@ export function StatusBadge({ status, className, showIcon = false }: StatusBadge
     const Icon = config.icon;
 
     return (
-        <Badge variant={config.variant} className={cn("gap-1.5", className)}>
-            {showIcon && <Icon className="w-3.5 h-3.5" />}
+        <Badge variant={config.variant} className={cn("gap-1", className)}>
+            {showIcon && <Icon className="w-3 h-3" />}
             {t(status)}
         </Badge>
     );
@@ -46,10 +46,19 @@ interface PriorityBadgeProps {
     showIcon?: boolean;
 }
 
-const PRIORITY_CONFIG: Record<IssuePriority, { color: string, icon: any }> = {
-    high: { color: "text-danger bg-danger/10 border-danger/20", icon: AlertTriangle },
-    medium: { color: "text-warning bg-warning/15 border-warning/20", icon: ArrowUpCircle },
-    low: { color: "text-neutral-500 bg-neutral-100 border-neutral-200", icon: ArrowDownCircle },
+const PRIORITY_CONFIG: Record<IssuePriority, { colorClasses: string, icon: React.ComponentType<{ className?: string }> }> = {
+    high: { 
+        colorClasses: "text-[hsl(var(--red-9))] bg-[hsl(var(--red-1))] border-[hsl(var(--red-3))]", 
+        icon: AlertTriangle 
+    },
+    medium: { 
+        colorClasses: "text-[hsl(var(--amber-9))] bg-[hsl(var(--amber-1))] border-[hsl(var(--amber-3))]", 
+        icon: ArrowUpCircle 
+    },
+    low: { 
+        colorClasses: "text-[hsl(var(--blue-9))] bg-[hsl(var(--blue-1))] border-[hsl(var(--blue-3))]", 
+        icon: ArrowDownCircle 
+    },
 };
 
 export function PriorityBadge({ priority, className, showIcon = true }: PriorityBadgeProps) {
@@ -59,8 +68,11 @@ export function PriorityBadge({ priority, className, showIcon = true }: Priority
 
     return (
         <span className={cn(
-            "inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold transition-colors gap-1",
-            config.color,
+            "inline-flex items-center rounded-full border",
+            "px-2.5 py-0.5",
+            "text-xs font-medium",
+            "gap-1",
+            config.colorClasses,
             className
         )}>
             {showIcon && <Icon className="w-3 h-3" />}
@@ -68,5 +80,3 @@ export function PriorityBadge({ priority, className, showIcon = true }: Priority
         </span>
     );
 }
-
-

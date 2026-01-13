@@ -23,56 +23,78 @@ export function IssueCard({ issue, className }: IssueCardProps) {
     return (
         <Link href={`/issues/${issue.id}`} className="block group h-full">
             <Card className={cn(
-                "hover:border-primary/30 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col bg-surface border-border/50",
+                "h-full flex flex-col",
+                "hover:border-[hsl(var(--blue-5))]",
                 className
             )}>
-                <CardHeader className="p-6 pb-4 space-y-4">
-                    <div className="flex justify-between items-start gap-4">
-                        <div className="flex gap-2 flex-wrap items-center">
+                <CardHeader className="p-4 pb-3 space-y-3">
+                    <div className="flex justify-between items-start gap-2">
+                        <div className="flex gap-1.5 flex-wrap items-center">
                             <StatusBadge status={issue.status} showIcon />
                             <PriorityBadge priority={issue.priority} showIcon />
                         </div>
-                        <div className="flex items-center gap-1 px-2 py-1 bg-surface-2 rounded-lg border border-border/50 text-neutral-400 group-hover:text-primary transition-colors">
+                        <div className={cn(
+                            "flex items-center gap-0.5 px-1.5 py-0.5 rounded",
+                            "bg-[hsl(var(--neutral-2))]",
+                            "text-[hsl(var(--neutral-6))]",
+                            "group-hover:text-[hsl(var(--blue-6))]",
+                            "transition-colors"
+                        )}>
                             <Hash size={10} />
-                            <span className="text-[10px] font-black uppercase tracking-widest leading-none">
+                            <span className="text-[10px] font-medium">
                                 {issue.id.split('-')[1]}
                             </span>
                         </div>
                     </div>
                     <div className="relative">
-                        <h3 className="font-bold text-lg leading-tight text-neutral-900 dark:text-neutral-50 group-hover:text-primary transition-colors line-clamp-2 pr-6">
+                        <h3 className={cn(
+                            "font-medium text-base leading-snug line-clamp-2 pr-5",
+                            "text-[hsl(var(--neutral-11))]",
+                            "group-hover:text-[hsl(var(--blue-7))]",
+                            "transition-colors"
+                        )}>
                             {issue.title}
                         </h3>
-                        <ArrowUpRight className="absolute top-0 right-0 w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all text-primary" />
+                        <ArrowUpRight className={cn(
+                            "absolute top-0 right-0 w-4 h-4",
+                            "text-[hsl(var(--blue-6))]",
+                            "opacity-0 group-hover:opacity-100",
+                            "transition-opacity"
+                        )} />
                     </div>
                 </CardHeader>
 
-                <CardContent className="p-6 py-0 flex-1">
-                    <p className="text-sm text-muted-fg line-clamp-2 leading-relaxed font-medium">
+                <CardContent className="p-4 pt-0 flex-1">
+                    <p className="text-sm text-[hsl(var(--neutral-7))] line-clamp-2 leading-relaxed">
                         {issue.description}
                     </p>
 
                     {issue.dueAt && (
                         <div className={cn(
-                            "mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest",
+                            "mt-3 inline-flex items-center gap-1.5 px-2 py-1 rounded",
+                            "text-xs font-medium",
                             new Date(issue.dueAt) < new Date()
-                                ? "bg-danger/10 text-danger border border-danger/20 animate-pulse"
-                                : "bg-neutral-100 text-neutral-500 border border-neutral-200"
+                                ? "bg-[hsl(var(--red-1))] text-[hsl(var(--red-9))]"
+                                : "bg-[hsl(var(--neutral-2))] text-[hsl(var(--neutral-7))]"
                         )}>
-                            <Clock size={12} strokeWidth={3} />
+                            <Clock size={12} />
                             {formatDistanceToNow(new Date(issue.dueAt), { locale: dateLocale, addSuffix: true })}
                         </div>
                     )}
                 </CardContent>
 
-                <CardFooter className="p-6 pt-5 text-[10px] font-bold uppercase tracking-widest text-muted-fg/60 flex items-center justify-between border-t border-border/30 mt-4 bg-muted/5 group-hover:bg-neutral-50 transition-colors">
-                    <div className="flex items-center gap-2 min-w-0">
-                        <MapPin size={12} strokeWidth={3} className="text-primary/60" />
-                        <span className="truncate max-w-[140px] text-neutral-600">
+                <CardFooter className={cn(
+                    "p-4 pt-3 text-xs text-[hsl(var(--neutral-7))]",
+                    "flex items-center justify-between",
+                    "border-t border-[hsl(var(--neutral-3))] mt-auto"
+                )}>
+                    <div className="flex items-center gap-1.5 min-w-0">
+                        <MapPin size={12} className="text-[hsl(var(--blue-6))]" />
+                        <span className="truncate max-w-[120px]">
                             {issue.location.neighborhood || t(`category.${issue.category}`)}
                         </span>
                     </div>
-                    <span className="flex-shrink-0 opacity-80">
+                    <span className="flex-shrink-0">
                         {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true, locale: dateLocale })}
                     </span>
                 </CardFooter>
@@ -80,5 +102,3 @@ export function IssueCard({ issue, className }: IssueCardProps) {
         </Link>
     );
 }
-
-

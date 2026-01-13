@@ -10,7 +10,7 @@ import { QueueToolbar, AssignmentDialog, SLAIndicator } from "@/features/unit";
 import { IssueCard } from "@/features/issue";
 import { AssignedTo } from "@/features/issue/model/types";
 import { addHours, isPast } from "date-fns";
-import { Check, X, Users, ChevronRight } from "lucide-react";
+import { Check, X, Users } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/button";
 
@@ -83,7 +83,7 @@ export default function UnitIssuesPage() {
     if (!session) return null;
 
     return (
-        <Container className="space-y-10 pb-24 animate-in fade-in duration-700">
+        <Container className="space-y-6 pb-24 animate-in fade-in duration-500">
             <PageHeader
                 title="İş Listesi & Atama"
                 description="Birim iş kuyruğunu yönet, atama yap ve SLA takip et."
@@ -91,60 +91,58 @@ export default function UnitIssuesPage() {
 
             <QueueToolbar currentPreset={preset} onPresetChange={setPreset} />
 
-            {/* Bulk Actions Context Bar */}
             {selectedIssueIds.size > 0 && (
-                <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] w-full max-w-2xl px-6 animate-in slide-in-from-bottom-8 duration-500">
-                    <div className="bg-neutral-900 dark:bg-neutral-50 rounded-[32px] p-4 shadow-2xl flex items-center justify-between gap-4 border-4 border-white/10 backdrop-blur-xl">
-                        <div className="flex items-center gap-4 ml-4">
-                            <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center font-black text-white text-sm shadow-lg shadow-primary/20">
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-full max-w-xl px-4 animate-in slide-in-from-bottom-4 duration-300">
+                    <div className="bg-fg rounded-xl p-3 shadow-xl flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3 ml-2">
+                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center font-semibold text-primary-fg text-sm">
                                 {selectedIssueIds.size}
                             </div>
-                            <span className="font-black text-xs uppercase tracking-widest text-neutral-50 dark:text-neutral-900">
+                            <span className="font-medium text-sm text-surface">
                                 Talep Seçildi
                             </span>
                         </div>
                         <div className="flex gap-2">
                             <Button
-                                size="lg"
-                                className="h-12 px-6 text-xs font-black uppercase tracking-widest rounded-2xl gap-2 shadow-xl shadow-primary/20"
+                                size="sm"
+                                className="h-9 px-4 text-sm font-medium rounded-lg gap-2"
                                 onClick={() => setAssignDialogOpen(true)}
                             >
-                                <Users size={16} strokeWidth={3} />
+                                <Users size={14} />
                                 Ekip/Kişi Ata
                             </Button>
                             <Button
-                                size="lg"
+                                size="sm"
                                 variant="ghost"
-                                className="h-12 w-12 p-0 rounded-2xl text-neutral-400 hover:text-white hover:bg-white/10"
+                                className="h-9 w-9 p-0 rounded-lg text-surface/60 hover:text-surface hover:bg-surface/10"
                                 onClick={() => setSelectedIssueIds(new Set())}
                             >
-                                <X size={20} strokeWidth={3} />
+                                <X size={16} />
                             </Button>
                         </div>
                     </div>
                 </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredIssues.map(issue => (
                     <div key={issue.id} className="relative group">
-                        {/* Selection Checkbox Overlay */}
-                        <div className="absolute top-4 left-4 z-20">
+                        <div className="absolute top-3 left-3 z-20">
                             <button
                                 onClick={(e) => { e.preventDefault(); toggleSelection(issue.id); }}
                                 className={cn(
-                                    "w-10 h-10 flex items-center justify-center rounded-2xl transition-all duration-300 shadow-xl active:scale-90",
+                                    "w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 shadow-md active:scale-95",
                                     selectedIssueIds.has(issue.id)
-                                        ? "bg-primary text-white scale-110 shadow-primary/30"
-                                        : "bg-surface/80 backdrop-blur-md text-transparent border-2 border-border/40 hover:border-primary/50 group-hover:scale-105"
+                                        ? "bg-primary text-primary-fg"
+                                        : "bg-surface/90 backdrop-blur-sm text-transparent border border-border hover:border-primary/50"
                                 )}
                             >
-                                <Check className={cn("w-5 h-5 transition-transform", selectedIssueIds.has(issue.id) ? "scale-100" : "scale-0")} strokeWidth={4} />
+                                <Check className={cn("w-4 h-4 transition-transform", selectedIssueIds.has(issue.id) ? "scale-100" : "scale-0")} strokeWidth={3} />
                             </button>
                         </div>
                         <div className={cn(
-                            "transition-all duration-500 rounded-[32px] overflow-hidden",
-                            selectedIssueIds.has(issue.id) ? "ring-4 ring-primary scale-[0.98] opacity-80 shadow-inner" : "hover:translate-y-[-4px]"
+                            "transition-all duration-300 rounded-xl overflow-hidden",
+                            selectedIssueIds.has(issue.id) ? "ring-2 ring-primary scale-[0.98]" : "hover:-translate-y-1"
                         )}>
                             <IssueCard issue={issue} />
                         </div>

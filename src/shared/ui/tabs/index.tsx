@@ -25,7 +25,9 @@ export function TabsList({ className, children }: { className?: string; children
     return (
         <div
             className={cn(
-                "inline-flex h-12 items-center justify-center rounded-lg bg-surface-2 p-1 text-muted-fg shadow-inner border border-border/50",
+                "inline-flex h-10 items-center gap-1",
+                "rounded-[var(--radius-md)] p-1",
+                "bg-[hsl(var(--neutral-2))]",
                 className
             )}
         >
@@ -49,10 +51,16 @@ export function TabsTrigger({ className, value, children, ...props }: TabsTrigge
             type="button"
             onClick={() => context.onValueChange(value)}
             className={cn(
-                "inline-flex items-center justify-center whitespace-nowrap rounded-md px-6 py-2 text-sm font-bold ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
+                "inline-flex items-center justify-center whitespace-nowrap",
+                "rounded-[var(--radius-sm)] px-3 py-1.5",
+                "text-sm font-medium",
+                "transition-colors duration-150",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--blue-6)/0.4)]",
+                "disabled:pointer-events-none disabled:opacity-50",
+                "cursor-pointer select-none",
                 isSelected
-                    ? "bg-surface text-primary shadow-sm"
-                    : "hover:bg-surface/50 hover:text-fg",
+                    ? "bg-[hsl(var(--surface))] text-[hsl(var(--blue-7))] shadow-sm"
+                    : "text-[hsl(var(--neutral-7))] hover:text-[hsl(var(--neutral-9))]",
                 className
             )}
             {...props}
@@ -71,7 +79,8 @@ export function TabsContent({ value, children, className }: { value: string; chi
     return (
         <div
             className={cn(
-                "mt-4 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 animate-in fade-in duration-300",
+                "mt-3",
+                "focus-visible:outline-none",
                 className
             )}
         >
@@ -79,4 +88,3 @@ export function TabsContent({ value, children, className }: { value: string; chi
         </div>
     )
 }
-

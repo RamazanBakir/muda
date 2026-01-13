@@ -11,7 +11,6 @@ import { Polygon } from "react-leaflet";
 import { STRINGS } from "@/shared/config/strings";
 import { cn } from "@/shared/lib/cn";
 import {
-    Layers,
     Zap,
     Map as MapIcon,
     Flame,
@@ -82,40 +81,43 @@ export default function MapPage() {
         }));
 
     return (
-        <div className="relative w-full h-[calc(100vh-80px)] overflow-hidden flex flex-col pt-0">
+        <div className="relative w-full h-[calc(100vh-56px)] md:h-[calc(100vh-80px)] overflow-hidden flex flex-col">
             {/* Map Header / Filter Bar */}
-            <div className="absolute top-6 left-6 right-6 z-[400] pointer-events-none flex flex-col gap-4 items-start md:flex-row md:items-center md:justify-between">
+            <div className="absolute top-4 left-4 right-4 z-[400] pointer-events-none flex flex-col gap-3 items-start md:flex-row md:items-center md:justify-between">
 
-                <div className="flex items-center gap-3 bg-surface/90 backdrop-blur-xl shadow-2xl p-1.5 rounded-2xl border-2 border-border/50 pointer-events-auto">
+                <div className={cn(
+                    "flex items-center gap-1",
+                    "bg-[hsl(var(--surface)/0.95)] backdrop-blur-sm p-1 rounded-[var(--radius-md)]",
+                    "border border-[hsl(var(--neutral-4))]",
+                    "shadow-[var(--shadow-md)]",
+                    "pointer-events-auto"
+                )}>
                     <Button
                         size="sm"
                         variant={analysisMode ? "primary" : "ghost"}
                         onClick={() => { setAnalysisMode(!analysisMode); setOverlayType("markers"); setIsDrawing(false); setAnalyzingArea(null); }}
-                        className={cn(
-                            "h-9 px-4 text-xs font-black uppercase tracking-widest gap-2",
-                            analysisMode ? "bg-purple-600 shadow-purple-600/20" : "text-muted-fg"
-                        )}
+                        className="gap-1.5"
                     >
-                        <BarChart2 size={14} strokeWidth={3} />
-                        {analysisMode ? "Analiz Modu Aktif" : "Analiz"}
+                        <BarChart2 size={14} />
+                        {analysisMode ? "Analiz" : "Analiz"}
                     </Button>
 
                     {!analysisMode && (
                         <>
-                            <div className="h-6 w-px bg-border/60 mx-1" />
+                            <div className="h-4 w-px bg-[hsl(var(--neutral-4))] mx-0.5" />
                             {[
-                                { id: 'markers', label: 'İaretçiler', icon: MapIcon },
-                                { id: 'heatmap', label: 'Isı Haritası', icon: Flame },
+                                { id: 'markers', label: 'İşaretçiler', icon: MapIcon },
+                                { id: 'heatmap', label: 'Isı', icon: Flame },
                                 { id: 'hotspots', label: 'Yoğunluk', icon: Zap }
                             ].map((mode) => (
                                 <button
                                     key={mode.id}
                                     onClick={() => setOverlayType(mode.id as any)}
                                     className={cn(
-                                        "h-9 px-4 text-xs font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer",
+                                        "h-8 px-3 text-sm font-medium rounded-[var(--radius-sm)] transition-colors flex items-center gap-1.5 cursor-pointer",
                                         overlayType === mode.id
-                                            ? "bg-primary text-primary-fg shadow-lg shadow-primary/20"
-                                            : "text-muted-fg hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                                            ? "bg-[hsl(var(--blue-6))] text-white"
+                                            : "text-[hsl(var(--neutral-7))] hover:bg-[hsl(var(--neutral-2))]"
                                     )}
                                 >
                                     <mode.icon size={14} />
@@ -127,80 +129,101 @@ export default function MapPage() {
                 </div>
 
                 {overlayType !== 'markers' && !analysisMode && (
-                    <div className="bg-surface/90 backdrop-blur-xl shadow-2xl p-1.5 rounded-2xl border-2 border-border/50 pointer-events-auto flex items-center gap-2">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-fg/60 ml-2 mr-1">Zaman</span>
-                        <Button size="sm" className="h-8 px-4 text-[10px] font-black uppercase tracking-widest">Son 30 Gün</Button>
-                        <Button size="sm" variant="ghost" className="h-8 px-4 text-[10px] font-black uppercase tracking-widest text-muted-fg">Son 7 Gün</Button>
+                    <div className={cn(
+                        "bg-[hsl(var(--surface)/0.95)] backdrop-blur-sm p-1 rounded-[var(--radius-md)]",
+                        "border border-[hsl(var(--neutral-4))]",
+                        "shadow-[var(--shadow-md)]",
+                        "pointer-events-auto flex items-center gap-1"
+                    )}>
+                        <span className="text-xs font-medium text-[hsl(var(--neutral-7))] ml-2 mr-1">Zaman</span>
+                        <Button size="sm" className="h-7 px-2 text-xs">Son 30 Gün</Button>
+                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs">Son 7 Gün</Button>
                     </div>
                 )}
             </div>
 
             {/* ANALYSIS SIDEBAR PANEL */}
             {analysisMode && (
-                <div className="absolute top-24 left-6 z-[400] w-80 bg-surface/95 backdrop-blur-2xl shadow-2xl border-2 border-border/50 rounded-3xl overflow-hidden flex flex-col max-h-[calc(100vh-160px)] animate-in slide-in-from-left duration-500">
-                    <div className="p-5 border-b-2 border-border/30 bg-surface-2 flex justify-between items-center">
-                        <span className="font-black text-xs uppercase tracking-widest text-muted-fg">Bölge Analizi</span>
+                <div className={cn(
+                    "absolute top-16 left-4 z-[400] w-72",
+                    "bg-[hsl(var(--surface)/0.98)] backdrop-blur-sm",
+                    "shadow-[var(--shadow-lg)]",
+                    "border border-[hsl(var(--neutral-4))]",
+                    "rounded-[var(--radius-lg)] overflow-hidden flex flex-col",
+                    "max-h-[calc(100vh-120px)]"
+                )}>
+                    <div className={cn(
+                        "p-4 border-b border-[hsl(var(--neutral-3))]",
+                        "bg-[hsl(var(--neutral-2))]",
+                        "flex justify-between items-center"
+                    )}>
+                        <span className="font-medium text-sm text-[hsl(var(--neutral-9))]">Bölge Analizi</span>
                         <Button
                             size="sm"
-                            className="h-8 px-4 text-[10px] font-black uppercase tracking-widest"
+                            className="h-7 px-2 text-xs"
                             onClick={() => setIsDrawing(true)}
                             disabled={isDrawing || !!analyzingArea}
                         >
-                            <PenTool size={12} className="mr-1.5" strokeWidth={3} />
-                            Çizim Yap
+                            <PenTool size={12} className="mr-1" />
+                            Çizim
                         </Button>
                     </div>
-                    <div className="p-6 overflow-y-auto flex-1 space-y-6">
+                    <div className="p-4 overflow-y-auto flex-1 space-y-4">
                         {analyzingArea && (
-                            <div className="space-y-4 bg-purple-50 dark:bg-purple-900/10 border-2 border-purple-200/50 p-5 rounded-2xl animate-in zoom-in-95">
+                            <div className={cn(
+                                "space-y-3 p-4 rounded-[var(--radius-md)]",
+                                "bg-[hsl(var(--blue-1))]",
+                                "border border-[hsl(var(--blue-3))]"
+                            )}>
                                 <div className="flex items-center justify-between">
-                                    <h4 className="font-black text-[10px] uppercase tracking-widest text-purple-700">Seçili Alan</h4>
-                                    <button onClick={() => setAnalyzingArea(null)} className="text-purple-400 hover:text-purple-600 transition-colors">
-                                        <X size={16} strokeWidth={3} />
+                                    <h4 className="font-medium text-sm text-[hsl(var(--blue-9))]">Seçili Alan</h4>
+                                    <button onClick={() => setAnalyzingArea(null)} className="text-[hsl(var(--neutral-6))] hover:text-[hsl(var(--neutral-9))]">
+                                        <X size={14} />
                                     </button>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-white dark:bg-neutral-900 p-4 rounded-xl border-2 border-purple-100 shadow-sm">
-                                        <div className="text-2xl font-black text-purple-600">{analyzingArea.stats.total}</div>
-                                        <div className="text-[10px] font-bold text-muted-fg uppercase tracking-widest mt-1">Toplam</div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div className="bg-[hsl(var(--surface))] p-3 rounded-[var(--radius-sm)] border border-[hsl(var(--neutral-4))]">
+                                        <div className="text-xl font-semibold text-[hsl(var(--blue-7))]">{analyzingArea.stats.total}</div>
+                                        <div className="text-xs text-[hsl(var(--neutral-7))]">Toplam</div>
                                     </div>
-                                    <div className="bg-white dark:bg-neutral-900 p-4 rounded-xl border-2 border-red-100 shadow-sm">
-                                        <div className="text-2xl font-black text-danger">{analyzingArea.stats.priorityCounts.high || 0}</div>
-                                        <div className="text-[10px] font-bold text-muted-fg uppercase tracking-widest mt-1">Acil</div>
+                                    <div className="bg-[hsl(var(--surface))] p-3 rounded-[var(--radius-sm)] border border-[hsl(var(--red-3))]">
+                                        <div className="text-xl font-semibold text-[hsl(var(--red-7))]">{analyzingArea.stats.priorityCounts.high || 0}</div>
+                                        <div className="text-xs text-[hsl(var(--neutral-7))]">Acil</div>
                                     </div>
                                 </div>
-                                <Button className="w-full bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-600/20 py-6 text-sm" onClick={saveCurrentArea}>
-                                    <Save size={16} className="mr-2" strokeWidth={3} />
-                                    Alanı Kaydet
+                                <Button className="w-full" size="sm" onClick={saveCurrentArea}>
+                                    <Save size={14} className="mr-1.5" />
+                                    Kaydet
                                 </Button>
                             </div>
                         )}
 
-                        <div className="space-y-4">
-                            <span className="text-[10px] font-black text-muted-fg/60 uppercase tracking-widest">Kaydedilen Bölgeler</span>
+                        <div className="space-y-2">
+                            <span className="text-xs font-medium text-[hsl(var(--neutral-7))]">Kaydedilen Bölgeler</span>
                             {savedAreas.length === 0 && (
-                                <div className="text-xs text-muted-fg font-medium italic bg-neutral-50 dark:bg-neutral-800/50 p-4 rounded-xl border-2 border-dashed border-border/60 text-center">
-                                    Henüz analiz edilmiş bölge yok.
+                                <div className="text-sm text-[hsl(var(--neutral-6))] italic p-3 rounded-[var(--radius-sm)] border border-dashed border-[hsl(var(--neutral-4))] text-center">
+                                    Henüz bölge yok
                                 </div>
                             )}
-                            <div className="grid gap-3">
+                            <div className="space-y-2">
                                 {savedAreas.map(area => (
                                     <div
                                         key={area.id}
-                                        className="group p-4 bg-surface hover:bg-neutral-50 dark:hover:bg-neutral-800 border-2 border-border/40 hover:border-primary/30 rounded-2xl shadow-sm cursor-pointer transition-all active:scale-95"
+                                        className={cn(
+                                            "p-3 bg-[hsl(var(--surface))] rounded-[var(--radius-sm)]",
+                                            "border border-[hsl(var(--neutral-4))]",
+                                            "hover:border-[hsl(var(--blue-5))]",
+                                            "cursor-pointer transition-colors"
+                                        )}
                                         onClick={() => setAnalyzingArea({ points: area.points, stats: area.stats })}
                                     >
-                                        <div className="flex items-center justify-between mb-2">
-                                            <div className="font-black text-neutral-900 dark:text-neutral-50">{area.name}</div>
-                                            <ChevronRight size={14} className="text-muted-fg opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
+                                        <div className="flex items-center justify-between mb-1">
+                                            <div className="font-medium text-sm text-[hsl(var(--neutral-11))]">{area.name}</div>
+                                            <ChevronRight size={12} className="text-[hsl(var(--neutral-6))]" />
                                         </div>
-                                        <div className="flex gap-4">
-                                            <div className="text-[10px] font-bold text-muted-fg bg-surface-2 px-2 py-1 rounded-lg">
-                                                {area.stats.total} Kayıt
-                                            </div>
-                                            <div className="text-[10px] font-bold text-danger bg-danger/5 px-2 py-1 rounded-lg">
-                                                {area.stats.priorityCounts.high || 0} Acil
-                                            </div>
+                                        <div className="flex gap-2 text-xs">
+                                            <span className="text-[hsl(var(--blue-7))]">{area.stats.total} kayıt</span>
+                                            <span className="text-[hsl(var(--red-7))]">{area.stats.priorityCounts.high || 0} acil</span>
                                         </div>
                                     </div>
                                 ))}
@@ -229,11 +252,11 @@ export default function MapPage() {
                     <Polygon
                         positions={analyzingArea.points}
                         pathOptions={{
-                            color: '#9333ea',
-                            fillColor: '#9333ea',
-                            fillOpacity: 0.2,
-                            weight: 3,
-                            dashArray: '8, 8'
+                            color: 'hsl(214, 78%, 50%)',
+                            fillColor: 'hsl(214, 78%, 50%)',
+                            fillOpacity: 0.1,
+                            weight: 2,
+                            dashArray: '4, 4'
                         }}
                     />
                 )}
@@ -241,36 +264,51 @@ export default function MapPage() {
 
             {/* Selected Issue Preview */}
             {selectedIssue && sheetOpen && (
-                <div className="absolute bottom-10 left-6 right-6 z-[500] pointer-events-none flex justify-center md:justify-start">
-                    <div className="bg-surface/95 backdrop-blur-2xl rounded-[32px] shadow-2xl border-2 border-border/50 w-full max-w-md pointer-events-auto animate-in slide-in-from-bottom-8 duration-500 overflow-hidden">
-                        <div className="p-8 relative">
+                <div className="absolute bottom-4 left-4 right-4 z-[500] pointer-events-none flex justify-center md:justify-start">
+                    <div className={cn(
+                        "w-full max-w-sm pointer-events-auto overflow-hidden",
+                        "bg-[hsl(var(--surface)/0.98)] backdrop-blur-sm rounded-[var(--radius-lg)]",
+                        "shadow-[var(--shadow-lg)]",
+                        "border border-[hsl(var(--neutral-4))]"
+                    )}>
+                        <div className="p-4 relative">
                             <button
                                 onClick={() => setSheetOpen(false)}
-                                className="absolute right-6 top-6 h-10 w-10 bg-surface-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full flex items-center justify-center text-muted-fg transition-all active:scale-90"
+                                className={cn(
+                                    "absolute right-3 top-3 h-7 w-7 rounded-full",
+                                    "flex items-center justify-center",
+                                    "bg-[hsl(var(--neutral-2))] text-[hsl(var(--neutral-7))]",
+                                    "hover:bg-[hsl(var(--neutral-3))]",
+                                    "transition-colors"
+                                )}
                             >
-                                <X size={18} strokeWidth={3} />
+                                <X size={14} />
                             </button>
 
-                            <div className="space-y-6">
-                                <div className="inline-flex items-center px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-xl text-[10px] font-black uppercase tracking-widest">
+                            <div className="space-y-3 pr-8">
+                                <div className={cn(
+                                    "inline-flex items-center px-2 py-0.5 rounded-full",
+                                    "text-xs font-medium",
+                                    "bg-[hsl(var(--blue-1))] text-[hsl(var(--blue-9))]"
+                                )}>
                                     {STRINGS.status[selectedIssue.status]}
                                 </div>
-                                <div className="space-y-3">
-                                    <h3 className="font-black text-2xl text-neutral-900 dark:text-neutral-50 leading-tight">
+                                <div>
+                                    <h3 className="font-semibold text-base text-[hsl(var(--neutral-11))] leading-tight">
                                         {selectedIssue.title}
                                     </h3>
-                                    <p className="text-muted-fg font-medium leading-relaxed line-clamp-2">
+                                    <p className="text-sm text-[hsl(var(--neutral-7))] mt-1 line-clamp-2">
                                         {selectedIssue.description}
                                     </p>
                                 </div>
 
-                                <div className="flex gap-4 pt-4 border-t-2 border-border/20">
-                                    <Button size="lg" className="flex-1 h-14" onClick={() => window.location.href = `/issues/${selectedIssue.id}`}>
-                                        Detaya Git
-                                        <ChevronRight size={18} className="ml-1" strokeWidth={3} />
+                                <div className="flex gap-2 pt-2">
+                                    <Button size="sm" className="flex-1" onClick={() => window.location.href = `/issues/${selectedIssue.id}`}>
+                                        Detay
+                                        <ChevronRight size={14} className="ml-1" />
                                     </Button>
-                                    <Button size="lg" variant="outline" className="h-14 aspect-square p-0" onClick={() => setSheetOpen(false)}>
-                                        <X size={20} />
+                                    <Button size="sm" variant="outline" className="w-8 h-8 p-0" onClick={() => setSheetOpen(false)}>
+                                        <X size={14} />
                                     </Button>
                                 </div>
                             </div>
@@ -281,4 +319,3 @@ export default function MapPage() {
         </div>
     );
 }
-

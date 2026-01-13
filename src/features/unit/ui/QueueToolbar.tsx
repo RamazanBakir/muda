@@ -1,8 +1,8 @@
 "use client";
 
-import { useSession } from "@/features/auth";
 import { Button } from "@/shared/ui/button";
-import { Filter, Users } from "lucide-react";
+import { Filter } from "lucide-react";
+import { cn } from "@/shared/lib/cn";
 
 interface QueueToolbarProps {
     currentPreset: string;
@@ -19,19 +19,18 @@ const PRESETS = [
 
 export function QueueToolbar({ currentPreset, onPresetChange }: QueueToolbarProps) {
     return (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 border-b">
-            <div className="flex bg-muted p-1 rounded-lg overflow-x-auto max-w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 border-b border-border">
+            <div className="flex bg-surface-2 p-1 rounded-lg overflow-x-auto max-w-full">
                 {PRESETS.map(preset => (
                     <button
                         key={preset.id}
                         onClick={() => onPresetChange(preset.id)}
-                        className={`
-                            px-4 py-1.5 text-sm font-medium rounded-md whitespace-nowrap transition-all
-                            ${currentPreset === preset.id
-                                ? 'bg-white shadow text-foreground'
-                                : 'text-muted-foreground hover:bg-white/50 hover:text-foreground'
-                            }
-                        `}
+                        className={cn(
+                            "px-3 py-1.5 text-sm font-medium rounded-md whitespace-nowrap transition-all",
+                            currentPreset === preset.id
+                                ? "bg-surface shadow-sm text-fg"
+                                : "text-muted-fg hover:bg-surface/50 hover:text-fg"
+                        )}
                     >
                         {preset.label}
                     </button>
@@ -42,7 +41,6 @@ export function QueueToolbar({ currentPreset, onPresetChange }: QueueToolbarProp
                 <Button variant="outline" size="sm" className="hidden sm:flex items-center gap-2">
                     <Filter className="w-4 h-4" /> Filtreler
                 </Button>
-                {/* Simplified bulk actions placeholder */}
             </div>
         </div>
     );

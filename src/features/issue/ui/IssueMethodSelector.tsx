@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/shared/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/shared/ui/card";
+import { Card, CardContent, CardFooter } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
@@ -20,7 +20,16 @@ const MapView = dynamic(() => import("@/features/map/ui/MapView").then(m => m.Ma
     ssr: false,
     loading: () => {
         const t = useTranslations("issueForm");
-        return <div className="h-64 flex items-center justify-center bg-surface-2 text-muted-fg animate-pulse rounded-3xl border-2 border-dashed border-border">{t('mapLoading')}</div>;
+        return (
+            <div className={cn(
+                "h-64 flex items-center justify-center",
+                "bg-[hsl(var(--neutral-2))] text-[hsl(var(--neutral-7))]",
+                "rounded-[var(--radius-lg)]",
+                "border border-dashed border-[hsl(var(--neutral-4))]"
+            )}>
+                {t('mapLoading')}
+            </div>
+        );
     }
 });
 
@@ -107,23 +116,23 @@ export function IssueMethodSelector() {
 
     // Step Progress Indicator
     const ProgressIndicator = () => (
-        <div className="flex items-center justify-center gap-4 mb-12">
+        <div className="flex items-center justify-center gap-3 mb-8">
             {[1, 2].map((s) => (
-                <div key={s} className="flex items-center gap-4">
+                <div key={s} className="flex items-center gap-3">
                     <div className={cn(
-                        "h-10 w-10 rounded-2xl flex items-center justify-center font-black text-sm transition-all duration-500",
+                        "h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors",
                         step === s
-                            ? "bg-primary text-primary-fg shadow-lg shadow-primary/20 scale-110"
+                            ? "bg-[hsl(var(--blue-6))] text-white"
                             : step > s
-                                ? "bg-success text-white"
-                                : "bg-surface-2 text-muted-fg border-2 border-border/50"
+                                ? "bg-[hsl(var(--green-6))] text-white"
+                                : "bg-[hsl(var(--neutral-3))] text-[hsl(var(--neutral-7))]"
                     )}>
-                        {step > s ? <CheckCircle2 size={20} strokeWidth={3} /> : s}
+                        {step > s ? <CheckCircle2 size={16} /> : s}
                     </div>
                     {s < 2 && (
                         <div className={cn(
-                            "w-12 h-1 rounded-full transition-all duration-500",
-                            step > s ? "bg-success" : "bg-border/60"
+                            "w-8 h-0.5 rounded-full transition-colors",
+                            step > s ? "bg-[hsl(var(--green-6))]" : "bg-[hsl(var(--neutral-3))]"
                         )} />
                     )}
                 </div>
@@ -134,79 +143,84 @@ export function IssueMethodSelector() {
     // Step 1: Location Selection
     if (step === 1) {
         return (
-            <div className="space-y-6 animate-in fade-in duration-500">
+            <div className="space-y-6">
                 <ProgressIndicator />
-                <div className="text-center space-y-3 mb-10">
-                    <h2 className="text-3xl font-black text-neutral-900 dark:text-neutral-50">{t('step1Title')}</h2>
-                    <p className="text-lg text-muted-fg font-medium">{t('step1Desc')}</p>
+                <div className="text-center space-y-2 mb-6">
+                    <h2 className="text-xl font-semibold text-[hsl(var(--neutral-11))]">{t('step1Title')}</h2>
+                    <p className="text-sm text-[hsl(var(--neutral-7))]">{t('step1Desc')}</p>
                 </div>
 
                 <Tabs value={method} onValueChange={setMethod} className="w-full">
-                    <TabsList className="grid w-80 mx-auto grid-cols-2 mb-10 p-1.5 h-14 rounded-2xl">
-                        <TabsTrigger value="map" className="rounded-xl flex items-center gap-2">
-                            <MapIcon size={16} />
+                    <TabsList className="grid w-full max-w-xs mx-auto grid-cols-2 mb-6">
+                        <TabsTrigger value="map" className="flex items-center gap-1.5">
+                            <MapIcon size={14} />
                             {t('tabs.map')}
                         </TabsTrigger>
-                        <TabsTrigger value="form" className="rounded-xl flex items-center gap-2">
-                            <Home size={16} />
+                        <TabsTrigger value="form" className="flex items-center gap-1.5">
+                            <Home size={14} />
                             {t('tabs.address')}
                         </TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="map" className="mt-0 focus-visible:outline-none">
-                        <Card className="overflow-hidden border-none shadow-2xl rounded-3xl">
-                            <div className="h-[450px] w-full relative">
+                    <TabsContent value="map">
+                        <Card className="overflow-hidden">
+                            <div className="h-[320px] w-full relative">
                                 <MapView
                                     draggableValues={location || MUG_CENTER}
                                     setDraggableValues={setLocation}
                                     center={MUG_CENTER}
                                 />
                                 {!location && (
-                                    <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-surface/90 backdrop-blur-xl px-6 py-3 rounded-2xl shadow-2xl text-sm font-black uppercase tracking-widest z-[1000] border-2 border-primary/20 animate-bounce flex items-center gap-2">
-                                        <MapPin size={16} className="text-primary" strokeWidth={3} />
+                                    <div className={cn(
+                                        "absolute top-4 left-1/2 -translate-x-1/2 z-[1000]",
+                                        "bg-[hsl(var(--surface)/0.95)] backdrop-blur-sm px-3 py-2 rounded-[var(--radius-md)]",
+                                        "shadow-[var(--shadow-md)]",
+                                        "border border-[hsl(var(--blue-3))]",
+                                        "text-sm font-medium text-[hsl(var(--blue-7))]",
+                                        "flex items-center gap-1.5"
+                                    )}>
+                                        <MapPin size={14} />
                                         {t('mapHint')}
                                     </div>
                                 )}
                             </div>
-                            <CardFooter className="p-6 bg-surface-2 border-t-2 border-border/30 justify-between items-center gap-4">
+                            <CardFooter className="p-4 justify-between items-center gap-3 bg-[hsl(var(--neutral-2))] border-t border-[hsl(var(--neutral-3))]">
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-fg/60 mb-1">
+                                    <span className="text-xs text-[hsl(var(--neutral-7))]">
                                         {t('selectedLoc')}
                                     </span>
-                                    <span className="text-xs font-bold text-neutral-900 dark:text-neutral-50">
+                                    <span className="text-sm font-medium text-[hsl(var(--neutral-11))]">
                                         {location ? `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}` : t('noLoc')}
                                     </span>
                                 </div>
-                                <div className="flex gap-4">
-                                    <Button size="lg" variant="ghost" onClick={clearDraft} className="text-muted-fg font-bold">
+                                <div className="flex gap-2">
+                                    <Button size="sm" variant="ghost" onClick={clearDraft}>
                                         {t('clear')}
                                     </Button>
-                                    <Button size="lg" onClick={handleNext} disabled={!location} className="min-w-[160px] shadow-xl shadow-primary/20">
+                                    <Button size="sm" onClick={handleNext} disabled={!location}>
                                         {t('continue')}
-                                        <ChevronRight size={18} className="ml-1" strokeWidth={3} />
+                                        <ChevronRight size={14} className="ml-1" />
                                     </Button>
                                 </div>
                             </CardFooter>
                         </Card>
                     </TabsContent>
 
-                    <TabsContent value="form" className="mt-0 focus-visible:outline-none">
-                        <Card className="border-none shadow-2xl rounded-3xl p-8">
-                            <div className="space-y-8">
-                                <div className="space-y-6">
-                                    <FormField label={tf('district') || "İlçe"}>
-                                        <Select className="h-14"><option>Menteşe</option></Select>
-                                    </FormField>
-                                    <FormField label={tf('neighborhood') || "Mahalle / Sokak"}>
-                                        <Input placeholder="Örn: Camikebir Mah. İnönü Cad." className="h-14" />
-                                    </FormField>
-                                    <FormField label={tf('addressDescription') || "Adres Tarifi"}>
-                                        <Textarea placeholder="Örn: Marketin karşısındaki apartman..." className="min-h-[120px]" />
-                                    </FormField>
-                                </div>
-                                <Button size="lg" className="w-full h-14 text-lg shadow-xl shadow-primary/20" onClick={() => setStep(2)}>
+                    <TabsContent value="form">
+                        <Card className="p-5">
+                            <div className="space-y-4">
+                                <FormField label={tf('district') || "İlçe"}>
+                                    <Select><option>Menteşe</option></Select>
+                                </FormField>
+                                <FormField label={tf('neighborhood') || "Mahalle / Sokak"}>
+                                    <Input placeholder="Örn: Camikebir Mah. İnönü Cad." />
+                                </FormField>
+                                <FormField label={tf('addressDescription') || "Adres Tarifi"}>
+                                    <Textarea placeholder="Örn: Marketin karşısındaki apartman..." />
+                                </FormField>
+                                <Button className="w-full" onClick={() => setStep(2)}>
                                     {t('continue')}
-                                    <ChevronRight size={20} className="ml-1" strokeWidth={3} />
+                                    <ChevronRight size={14} className="ml-1" />
                                 </Button>
                             </div>
                         </Card>
@@ -218,29 +232,29 @@ export function IssueMethodSelector() {
 
     // Step 2: Details
     return (
-        <div className="space-y-6 animate-in slide-in-from-right-8 duration-500">
+        <div className="space-y-6">
             <ProgressIndicator />
 
-            <div className="text-center space-y-3 mb-12 relative group">
+            <div className="text-center space-y-2 mb-6 relative">
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setStep(1)}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 h-12 w-12 rounded-2xl hover:bg-neutral-100 p-0"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
                 >
-                    <ArrowLeft size={20} strokeWidth={3} />
+                    <ArrowLeft size={16} />
                 </Button>
-                <h2 className="text-3xl font-black text-neutral-900 dark:text-neutral-50">{t('step2Title')}</h2>
-                <p className="text-lg text-muted-fg font-medium">{t('step2Desc')}</p>
+                <h2 className="text-xl font-semibold text-[hsl(var(--neutral-11))]">{t('step2Title')}</h2>
+                <p className="text-sm text-[hsl(var(--neutral-7))]">{t('step2Desc')}</p>
             </div>
 
-            <Card className="max-w-2xl mx-auto border-none shadow-2xl rounded-3xl overflow-hidden">
-                <CardContent className="space-y-8 p-10">
+            <Card className="max-w-lg mx-auto">
+                <CardContent className="space-y-4 p-5">
                     <FormField label={tf('category')} required error={errors.category}>
                         <Select
                             value={formData.category}
                             onChange={e => setFormData({ ...formData, category: e.target.value })}
-                            className={cn("h-14 text-base font-bold", errors.category && "border-danger ring-danger/10")}
+                            className={errors.category ? "border-[hsl(var(--red-6))]" : ""}
                         >
                             <option value="">{tf('categorySelect')}</option>
                             <option value="water_sewer">{tc('water_sewer')}</option>
@@ -255,32 +269,28 @@ export function IssueMethodSelector() {
                             placeholder={tf('titlePlaceholder')}
                             value={formData.title}
                             onChange={e => setFormData({ ...formData, title: e.target.value })}
-                            className={cn("h-14 text-base font-bold", errors.title && "border-danger ring-danger/10")}
+                            className={errors.title ? "border-[hsl(var(--red-6))]" : ""}
                         />
                     </FormField>
 
                     <FormField label={tf('description')} required error={errors.desc} hint={tf('descriptionHint')}>
                         <Textarea
                             placeholder={tf('descriptionPlaceholder')}
-                            className={cn("min-h-[140px] text-base font-medium leading-relaxed p-4", errors.desc && "border-danger ring-danger/10")}
+                            className={errors.desc ? "border-[hsl(var(--red-6))]" : ""}
                             value={formData.desc}
                             onChange={e => setFormData({ ...formData, desc: e.target.value })}
                         />
                     </FormField>
 
                     {/* Optional Contact */}
-                    <div className="bg-surface-2 p-8 rounded-3xl space-y-6 border-2 border-border/40">
-                        <div className="flex items-center gap-2">
-                            <div className="h-6 w-1 bg-primary rounded-full" />
-                            <h4 className="font-black text-xs uppercase tracking-widest text-muted-fg opacity-80">{tf('contactTitle')}</h4>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="p-4 rounded-[var(--radius-md)] space-y-3 bg-[hsl(var(--neutral-2))] border border-[hsl(var(--neutral-3))]">
+                        <h4 className="text-sm font-medium text-[hsl(var(--neutral-9))]">{tf('contactTitle')}</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <FormField label={tf('fullName')}>
                                 <Input
                                     placeholder={tf('fullName')}
                                     value={formData.contactName}
                                     onChange={e => setFormData({ ...formData, contactName: e.target.value })}
-                                    className="bg-surface h-12"
                                 />
                             </FormField>
                             <FormField label={tf('phone')}>
@@ -288,26 +298,22 @@ export function IssueMethodSelector() {
                                     placeholder={tf('phone')}
                                     value={formData.contactPhone}
                                     onChange={e => setFormData({ ...formData, contactPhone: e.target.value })}
-                                    className="bg-surface h-12"
                                 />
                             </FormField>
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter className="p-10 pt-0">
+                <CardFooter className="p-5 pt-0">
                     <Button
-                        size="lg"
-                        className="w-full h-16 text-lg font-black shadow-2xl shadow-primary/30 rounded-2xl"
+                        className="w-full"
                         onClick={handleSubmit}
                         isLoading={loading}
                     >
                         {t('submit')}
-                        {!loading && <CheckCircle2 className="ml-2 w-5 h-5" strokeWidth={3} />}
+                        {!loading && <CheckCircle2 className="ml-2 w-4 h-4" />}
                     </Button>
                 </CardFooter>
             </Card>
         </div>
     );
 }
-
-
