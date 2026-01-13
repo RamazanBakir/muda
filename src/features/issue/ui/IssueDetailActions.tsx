@@ -9,7 +9,7 @@ import { Issue, IssueStatus, IssuePriority } from "../model/types";
 import { UserRole } from "@/features/auth";
 import { issueRepository } from "../api/issueRepository";
 import { useTranslations } from "next-intl";
-import { cn } from "@/shared/lib/cn";
+import { Clock, CheckCircle, AlertCircle } from "lucide-react";
 
 interface IssueDetailActionsProps {
     issue: Issue;
@@ -22,7 +22,6 @@ export function IssueDetailActions({ issue, role, onUpdate }: IssueDetailActions
     const ta = useTranslations("actions");
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [actionType, setActionType] = useState<"reroute" | "status" | null>(null);
 
     const [selectedUnit, setSelectedUnit] = useState(issue.assignedUnit?.id || "");
     const [selectedPriority, setSelectedPriority] = useState<IssuePriority>(issue.priority);
@@ -76,45 +75,70 @@ export function IssueDetailActions({ issue, role, onUpdate }: IssueDetailActions
         return null;
     }
 
-    return (
-        <div className="flex flex-col gap-3 p-3 bg-surface-2 rounded-lg border border-border">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-fg">{t('common.actions')}</h3>
-
-            {role === 'unit' && (
-                <div className="flex gap-2 flex-wrap">
-                    {issue.status === 'triaged' && (
-                        <Button size="sm" onClick={() => handleStatusChange('in_progress')} isLoading={loading}>
-                            {ta('takeAction')}
-                        </Button>
-                    )}
-                    {issue.status === 'in_progress' && (
-                        <Button
-                            size="sm"
-                            className="bg-success hover:bg-success/90 text-surface"
-                            onClick={() => handleStatusChange('resolved')}
-                            isLoading={loading}
-                        >
-                            {ta('resolveAction')}
-                        </Button>
-                    )}
-                    {issue.status === 'resolved' && (
-                        <span className="text-sm text-success font-medium">{ta('resolvedMessage')}</span>
-                    )}
-                </div>
-            )}
-
-            {role === 'call_center' && (
-                <div className="flex gap-2 flex-wrap">
-                    <Button size="sm" variant="outline" onClick={() => { setActionType('reroute'); setDialogOpen(true); }}>
-                        {ta('editAction')}
+    const renderUnitActions = () => {
+        switch (issue.status) {
+            case 'created':
+                return (
+                    <div className="flex items-center gap-2 text-sm text-muted-fg">
+                        <Clock size={14} />
+                        <span>{ta('waitingTriage') || 'Triaj bekleniyor'}</span>
+                    </div>
+                );
+            case 'triaged':
+                return (
+                    <Button size="sm" onClick={() => handleStatusChange('in_progress')} isLoading={loading}>
+                        {ta('takeAction')}
                     </Button>
-                    {issue.status !== 'resolved' && (
-                        <Button size="sm" variant="destructive" onClick={() => handleStatusChange('resolved')}>
-                            {ta('closeAction')}
-                        </Button>
-                    )}
-                </div>
-            )}
+                );
+            case 'in_progress':
+                return (
+                    <Button
+                        size="sm"
+                        className="bg-success hover:bg-success/90 text-surface"
+                        onClick={() => handleStatusChange('resolved')}
+                        isLoading={loading}
+                    >
+                        {ta('resolveAction')}
+                    </Button>
+                );
+            case 'resolved':
+                return (
+                    <div className="flex items-center gap-2 text-sm text-success font-medium">
+                        <CheckCircle size={14} />
+                        <span>{ta('resolvedMessage')}</span>
+                    </div>
+                );
+            default:
+                return (
+                    <div className="flex items-center gap-2 text-sm text-muted-fg">
+                        <AlertCircle size={14} />
+                        <span>{ta('noActionsAvailable') || 'İşlem yapılamaz'}</span>
+                    </div>
+                );
+        }
+    };
+
+    const renderCallCenterActions = () => {
+        return (
+            <div className="flex gap-2 flex-wrap">
+                <Button size="sm" variant="outline" onClick={() => setDialogOpen(true)}>
+                    {ta('editAction')}
+                </Button>
+                {issue.status !== 'resolved' && (
+                    <Button size="sm" variant="destructive" onClick={() => handleStatusChange('resolved')}>
+                        {ta('closeAction')}
+                    </Button>
+                )}
+            </div>
+        );
+    };
+
+    return (
+        <div className="flex flex-col gap-3 p-4 bg-[hsl(var(--surface))] rounded-[var(--radius-lg)] border border-[hsl(var(--neutral-4))] shadow-[var(--shadow-soft)]">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[hsl(var(--neutral-7))]">{t('common.actions')}</h3>
+
+            {role === 'unit' && renderUnitActions()}
+            {role === 'call_center' && renderCallCenterActions()}
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogHeader>

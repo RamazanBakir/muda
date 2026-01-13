@@ -100,33 +100,30 @@ export default function IssueDetailPage() {
                 title={issue.title}
                 description={
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-2 rounded-md border border-border text-xs font-medium text-muted-fg">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[hsl(var(--neutral-2))] rounded-md border border-[hsl(var(--neutral-4))] text-xs font-medium text-[hsl(var(--neutral-7))]">
                             {td('idLabel')}: {issue.id}
                         </span>
-                        <span className="text-border">•</span>
+                        <span className="text-[hsl(var(--neutral-5))]">•</span>
                         <span className="text-xs text-muted-fg">
                             {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true, locale: dateLocale })}
                         </span>
                     </div>
-                }
-                actions={
-                    <IssueDetailActions issue={issue} role={session.role} onUpdate={setIssue} />
                 }
             />
 
             <div className="grid gap-6 lg:grid-cols-3 mt-8">
                 <div className="lg:col-span-2 space-y-6">
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        <div className="bg-surface border border-border p-4 rounded-xl">
-                            <span className="block text-xs font-medium text-muted-fg mb-2">{td('status')}</span>
+                        <div className="bg-[hsl(var(--surface))] border border-[hsl(var(--neutral-4))] p-4 rounded-[var(--radius-lg)] shadow-[var(--shadow-soft)] transition-all duration-200">
+                            <span className="block text-xs font-medium text-[hsl(var(--neutral-7))] mb-2">{td('status')}</span>
                             <StatusBadge status={issue.status} showIcon />
                         </div>
-                        <div className="bg-surface border border-border p-4 rounded-xl">
-                            <span className="block text-xs font-medium text-muted-fg mb-2">{td('priority')}</span>
+                        <div className="bg-[hsl(var(--surface))] border border-[hsl(var(--neutral-4))] p-4 rounded-[var(--radius-lg)] shadow-[var(--shadow-soft)] transition-all duration-200">
+                            <span className="block text-xs font-medium text-[hsl(var(--neutral-7))] mb-2">{td('priority')}</span>
                             <PriorityBadge priority={issue.priority} showIcon />
                         </div>
-                        <div className="bg-surface border border-border p-4 rounded-xl col-span-2 md:col-span-1">
-                            <span className="block text-xs font-medium text-muted-fg mb-2">{td('category')}</span>
+                        <div className="bg-[hsl(var(--surface))] border border-[hsl(var(--neutral-4))] p-4 rounded-[var(--radius-lg)] shadow-[var(--shadow-soft)] transition-all duration-200 col-span-2 md:col-span-1">
+                            <span className="block text-xs font-medium text-[hsl(var(--neutral-7))] mb-2">{td('category')}</span>
                             <div className="flex items-center gap-2 text-sm font-medium text-fg px-2 py-1 bg-secondary rounded-lg w-fit">
                                 <Tag size={14} className="text-primary" />
                                 {t(`category.${issue.category}`)}
@@ -139,13 +136,13 @@ export default function IssueDetailPage() {
                             {issue.description}
                         </p>
                         {issue.media.photos.length > 0 && (
-                            <div className="mt-6 pt-4 border-t border-border">
+                            <div className="mt-6 pt-4 border-t border-[hsl(var(--neutral-3))]">
                                 <div className="flex items-center gap-2 mb-3 text-xs font-medium text-muted-fg">
                                     <ImageIcon size={14} />
                                     {td('photos')}
                                 </div>
                                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                                    <div className="aspect-[4/3] bg-surface-2 rounded-lg w-full border border-dashed border-border flex items-center justify-center text-muted-fg group cursor-pointer hover:border-primary/40 transition-colors">
+                                    <div className="aspect-[4/3] bg-[hsl(var(--neutral-2))] rounded-lg w-full border border-dashed border-[hsl(var(--neutral-4))] flex items-center justify-center text-[hsl(var(--neutral-6))] group cursor-pointer hover:border-[hsl(var(--blue-4))] transition-colors">
                                         <ImageIcon size={24} className="opacity-30 group-hover:opacity-50 transition-opacity" />
                                     </div>
                                 </div>
@@ -168,7 +165,7 @@ export default function IssueDetailPage() {
                                 <div className="h-10 w-10 bg-primary text-primary-fg rounded-full flex items-center justify-center shadow-lg">
                                     <MapPin size={20} />
                                 </div>
-                                <div className="mt-3 bg-surface p-2 rounded-lg shadow-md border border-border text-center max-w-[180px]">
+                                <div className="mt-3 bg-[hsl(var(--surface))] p-2 rounded-lg shadow-[var(--shadow-md)] border border-[hsl(var(--neutral-4))] text-center max-w-[180px]">
                                     <span className="font-semibold text-xs text-fg block">{issue.location.neighborhood}</span>
                                     <span className="text-xs text-muted-fg">{issue.location.addressText || "-"}</span>
                                 </div>
@@ -190,6 +187,8 @@ export default function IssueDetailPage() {
                 </div>
 
                 <div className="space-y-4">
+                    <IssueDetailActions issue={issue} role={session.role} onUpdate={setIssue} />
+                    
                     <InfoCard title={td('reporter')} icon={<User size={14} />}>
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-lg bg-primary text-primary-fg flex items-center justify-center font-semibold text-lg">
