@@ -1,26 +1,227 @@
 @import "tailwindcss";
 
+@theme {
+  /* Colors mapping to semantic CSS variables */
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-fg);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-fg);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-fg);
+
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  /* Radius mapping */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  /* Standard Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --- PRIMITIVE TOKENS --- */
+
+  /* Neutral scale (Warm Stone) - Airy and friendly */
+  --neutral-0: 0 0% 100%;
+  --neutral-50: 30 20% 98%;
+  /* Page Background */
+  --neutral-100: 30 15% 96%;
+  /* Secondary Surface */
+  --neutral-200: 30 10% 92%;
+  /* Subdued Borders */
+  --neutral-300: 30 8% 86%;
+  /* Default Borders */
+  --neutral-400: 30 6% 70%;
+  /* Tertiary Text */
+  --neutral-500: 30 5% 50%;
+  /* Muted Text */
+  --neutral-600: 30 7% 38%;
+  /* Secondary Text */
+  --neutral-700: 30 10% 28%;
+  /* Strong Text */
+  --neutral-800: 30 12% 18%;
+  /* Dark Text */
+  --neutral-900: 30 15% 12%;
+  /* Near Black */
+  --neutral-950: 30 20% 6%;
+  /* Black */
+
+  /* Accent scale (Atlantic Teal) - Professional and calm */
+  --primary-50: 175 60% 97%;
+  --primary-100: 175 55% 94%;
+  --primary-200: 175 50% 86%;
+  --primary-300: 175 45% 76%;
+  --primary-400: 176 40% 62%;
+  --primary-500: 176 50% 48%;
+  --primary-600: 176 65% 38%;
+  /* Main Primary */
+  --primary-700: 176 75% 30%;
+  /* Hover State */
+  --primary-800: 176 80% 22%;
+  --primary-900: 176 85% 15%;
+
+  /* Functional scales (Softened) */
+  --success-color: 155 50% 45%;
+  --warning-color: 38 85% 55%;
+  --danger-color: 350 70% 58%;
+
+  /* --- SEMANTIC TOKENS --- */
+
+  /* Core Surfaces */
+  --bg: var(--neutral-50);
+  --fg: var(--neutral-800);
+  --muted-fg: var(--neutral-500);
+
+  --surface: var(--neutral-0);
+  --surface-2: var(--neutral-100);
+
+  --border: var(--neutral-200);
+  /* Very subtle */
+  --border-strong: var(--neutral-300);
+
+  /* Focus States */
+  --ring: var(--primary-500);
+
+  /* Brand Layers */
+  --primary: var(--primary-600);
+  --primary-fg: var(--neutral-0);
+
+  --secondary: var(--primary-100);
+  --secondary-fg: var(--primary-700);
+
+  --muted: var(--neutral-100);
+
+  /* Functional Layers */
+  --success: var(--success-color);
+  --warning: var(--warning-color);
+  --danger: var(--danger-color);
+
+  /* --- COMPONENT TOKENS --- */
+
+  /* Radii (Modern, generous) */
+  --radius-sm: 0.5rem;
+  /* 8px - Small elements */
+  --radius-md: 0.75rem;
+  /* 12px - Medium elements/Inputs */
+  --radius-lg: 1rem;
+  /* 16px - Cards */
+  --radius-xl: 1.5rem;
+  /* 24px - Large sections/banners */
+
+  /* Standard Spacing (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* Dark Mode Structure (Values are placeholders but structured) */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: var(--neutral-900);
+    --fg: var(--neutral-100);
+    --muted-fg: var(--neutral-400);
+    --surface: var(--neutral-800);
+    --surface-2: var(--neutral-700);
+    --border: var(--neutral-700);
+    --primary: var(--primary-400);
+    --primary-fg: var(--neutral-950);
+    --secondary: var(--neutral-700);
+    --secondary-fg: var(--primary-200);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/10 selection:text-primary;
+    line-height: 1.6;
+    letter-spacing: -0.011em;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight text-neutral-900 dark:text-neutral-50;
+  }
+
+  /* Consistent Focus Style */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring/40 ring-offset-2 ring-offset-background transition-shadow;
+  }
+
+  /* Typography Scale */
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  /* Scrollbar - Minimal */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-300 rounded-full border-4 border-solid border-transparent bg-clip-padding;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-400;
+  }
+}
+
+@layer components {
+
+  /* Layout Primitives Utility */
+  .container-wide {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-narrow {
+    @apply max-w-3xl mx-auto px-4 sm:px-6;
+  }
+
+  .surface-elevated {
+    @apply bg-surface shadow-md border border-border rounded-lg overflow-hidden;
+  }
 }

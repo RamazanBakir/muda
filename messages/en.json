@@ -1,0 +1,256 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "save": "Save",
+        "cancel": "Cancel",
+        "back": "Back",
+        "empty": "No data found",
+        "actions": "Actions"
+    },
+    "status": {
+        "created": "Created",
+        "triaged": "Triaged",
+        "in_progress": "In Progress",
+        "resolved": "Resolved"
+    },
+    "priority": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+    },
+    "category": {
+        "transportation": "Transportation & Roads",
+        "water_sewer": "Water & Sewage",
+        "parks": "Parks & Gardens",
+        "waste": "Waste & Cleaning"
+    },
+    "roles": {
+        "citizen": "Citizen",
+        "mukhtar": "Mukhtar",
+        "unit": "Unit",
+        "call_center": "Call Center"
+    },
+    "issue": {
+        "createTitle": "Report New Issue",
+        "myIssues": "My Issues",
+        "neighborhoodIssues": "Neighborhood Issues",
+        "unitInbox": "Unit Inbox",
+        "allIssues": "All Issues",
+        "assignTo": "Assign to Unit",
+        "setPriority": "Set Priority",
+        "changeStatus": "Change Status"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "map": "Map",
+        "issues": "Issues",
+        "activity": "Activity",
+        "admin": "Admin",
+        "unit_analytics": "Analytics",
+        "unit_queue": "Work Queue"
+    },
+    "landing": {
+        "heroTag": "Digital Solution for Muğla",
+        "heroTitle1": "For our city",
+        "heroTitle2": "be part of the solution",
+        "heroDesc": "Report transportation, infrastructure or environment issues in seconds. Track the process, contribute to our city's development.",
+        "reportBtn": "Report Issue Now",
+        "myIssuesBtn": "My Issues (Coming soon)",
+        "stats": {
+            "issues": "Records Created",
+            "resolution": "Resolution Rate",
+            "responseTime": "Avg. Response Time",
+            "districts": "Districts Covered"
+        },
+        "howItWorks": {
+            "title": "How it Works?",
+            "desc": "No complex bureaucracy. We deliver your request to the relevant unit in three simple steps.",
+            "step1": {
+                "title": "Report the Issue",
+                "desc": "Send us the issue by adding location and photo."
+            },
+            "step2": {
+                "title": "Forwarded to Unit",
+                "desc": "With AI support, your notification is instantly in the right unit."
+            },
+            "step3": {
+                "title": "Follow the Solution",
+                "desc": "Be informed via SMS and app throughout the process."
+            }
+        }
+    },
+    "issueDetail": {
+        "notFoundTitle": "Issue Not Found",
+        "notFoundDesc": "The request you're looking for doesn't exist or you may have restricted access.",
+        "backToList": "Back to List",
+        "idLabel": "Notification ID",
+        "status": "Status",
+        "priority": "Priority",
+        "category": "Category",
+        "description": "Detailed Description",
+        "photos": "Attached Photos",
+        "location": "Location Info",
+        "district": "District / Neighborhood",
+        "address": "Full Address / Street",
+        "reporter": "Reporter",
+        "createdAt": "Created At",
+        "assignedUnit": "Assigned Unit",
+        "notAssigned": "Not Assigned",
+        "assignedDesc": "Responsible Unit",
+        "pendingAssignment": "No unit assigned yet"
+    },
+    "issues": {
+        "title": "Issues",
+        "descCitizen": "A list of all notifications you created in Muğla.",
+        "descMukhtar": "Citizen notifications in your neighborhood.",
+        "descUnit": "A list of work forwarded to our unit.",
+        "descAdmin": "All records in the system.",
+        "searchLabel": "Search",
+        "searchPlaceholder": "No, Title, Content...",
+        "statusLabel": "Status",
+        "priorityLabel": "Priority",
+        "allFilter": "All",
+        "emptyTitle": "No Records Found",
+        "emptyDesc": "No requests matching the selected criteria."
+    },
+    "login": {
+        "title": "Sign in to System",
+        "desc": "Sign in is required for corporate roles.",
+        "citizenLink": "If you are a citizen",
+        "backToHome": "back to home",
+        "loading": "Loading..."
+    },
+    "createIssue": {
+        "title": "Report Issue",
+        "desc": "Resolve issues quickly with Muğla Transportation Digital Assistant."
+    },
+    "issueForm": {
+        "step1Title": "1. Location Selection",
+        "step1Desc": "Determine the location for the notification.",
+        "tabs": {
+            "map": "Via Map",
+            "address": "Address Form"
+        },
+        "mapHint": "👆 Tap the map to drop a pin",
+        "mapLoading": "Loading Map...",
+        "selectedLoc": "Selected",
+        "noLoc": "Location not selected",
+        "clear": "Clear",
+        "continue": "Continue",
+        "step2Title": "2. Details",
+        "step2Desc": "Provide information about the issue.",
+        "back": "Back",
+        "fields": {
+            "category": "Category",
+            "categorySelect": "Select",
+            "title": "Title",
+            "titlePlaceholder": "e.g. Broken Manhole Cover",
+            "description": "Description",
+            "descriptionPlaceholder": "Detailed information...",
+            "descriptionHint": "Please explain the issue in detail.",
+            "contactTitle": "Your Contact Info (Optional)",
+            "fullName": "Full Name",
+            "phone": "Phone",
+            "district": "District",
+            "neighborhood": "Neighborhood",
+            "addressDescription": "Full Address"
+        },
+        "submit": "Complete Notification",
+        "errors": {
+            "category": "Please select a category",
+            "title": "Please enter a title",
+            "description": "Please enter a description",
+            "selectLocation": "Please select a location on the map."
+        },
+        "draftPrompt": "An unfinished draft was found. Do you want to continue?"
+    },
+    "dashboard": {
+        "greeting": "Hello, {name}",
+        "citizenSubTitle": "Thank you for contributing to the development of Muğla.",
+        "systemSubTitle": "Welcome to the system panel.",
+        "createCard": {
+            "title": "New Notification",
+            "descCitizen": "Quickly report an issue you see.",
+            "descSystem": "Manually enter a new notification into the system.",
+            "button": "Create Notification"
+        },
+        "listCard": {
+            "titleCitizen": "My Notifications",
+            "titleMukhtar": "Neighborhood Notifications",
+            "titleUnit": "Unit Inbox",
+            "titleCallCenter": "All Notifications",
+            "desc": "Track the status of notifications and view details.",
+            "button": "Go to List"
+        },
+        "statsCard": {
+            "title": "General Status (Weekly)",
+            "openIssues": "Open Work",
+            "resolvedIssues": "Resolved"
+        },
+        "helpBanner": {
+            "title": "Need more help?",
+            "desc": "You can check frequently asked questions or call our solution center.",
+            "button": "Help Center"
+        }
+    },
+    "timeline": {
+        "title": "Process History",
+        "internal": "Internal"
+    },
+    "actions": {
+        "confirmStatus": "Are you sure you want to change the status?",
+        "unitOfficial": "Unit Official",
+        "callCenter": "Call Center",
+        "takeAction": "Take Action",
+        "resolveAction": "Mark as Resolved",
+        "resolvedMessage": "This request has been resolved.",
+        "editAction": "Edit Unit/Priority",
+        "closeAction": "Close (Resolved)",
+        "dialogTitle": "Edit Request",
+        "assignUnit": "Assign Unit",
+        "select": "Select",
+        "noteLabel": "Process Note",
+        "notePlaceholder": "Reason for change...",
+        "cancel": "Cancel",
+        "save": "Save"
+    },
+    "map": {
+        "locateMe": "Locate Me",
+        "resetCenter": "Reset to Center",
+        "errorLocate": "Location not found",
+        "selectedLoc": "Selected Location"
+    },
+    "loginForm": {
+        "loginTitle": "Login",
+        "errorAuth": "Invalid login credentials. Please check again.",
+        "loggingIn": "Logging In...",
+        "mukhtarDesc": "Login panel for neighborhood mukhtars.",
+        "unitDesc": "Login panel for municipal unit officials.",
+        "callCenterDesc": "Login panel for call center operators.",
+        "usernameLabel": "Username",
+        "unitCodeLabel": "Unit Code",
+        "operatorIdLabel": "Operator ID",
+        "passwordLabel": "Password",
+        "demoHint": "Password for demo: {password}",
+        "submit": "Login"
+    },
+    "roles": {
+        "citizen": "Citizen",
+        "mukhtar": "Mukhtar",
+        "unit": "Unit Official",
+        "call_center": "Call Center"
+    },
+    "auth": {
+        "logout": "Logout",
+        "login": "Login"
+    },
+    "publicLayout": {
+        "subTitle": "Muğla Transportation",
+        "reportButton": "Report Issue",
+        "copyright": "© 2026 Muğla Metropolitan Municipality",
+        "privacy": "Privacy",
+        "terms": "Terms of Use",
+        "contact": "Contact"
+    }
+}

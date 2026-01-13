@@ -1,0 +1,256 @@
+{
+    "common": {
+        "loading": "Yükleniyor...",
+        "error": "Bir hata oluştu",
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "back": "Geri",
+        "empty": "Veri bulunamadı",
+        "actions": "İşlemler"
+    },
+    "status": {
+        "created": "Oluşturuldu",
+        "triaged": "Değerlendirildi",
+        "in_progress": "İşleme Alındı",
+        "resolved": "Çözüldü"
+    },
+    "priority": {
+        "high": "Yüksek",
+        "medium": "Orta",
+        "low": "Düşük"
+    },
+    "category": {
+        "transportation": "Ulaşım & Yol",
+        "water_sewer": "Su & Kanalizasyon",
+        "parks": "Park & Bahçeler",
+        "waste": "Temizlik & Atık"
+    },
+    "roles": {
+        "citizen": "Vatandaş",
+        "mukhtar": "Muhtar",
+        "unit": "Birim",
+        "call_center": "Çağrı Merkezi"
+    },
+    "issue": {
+        "createTitle": "Yeni Sorun Bildir",
+        "myIssues": "Taleplerim",
+        "neighborhoodIssues": "Mahalle Talepleri",
+        "unitInbox": "Birim Gelen Kutusu",
+        "allIssues": "Tüm Talepler",
+        "assignTo": "Birime Ata",
+        "setPriority": "Öncelik Belirle",
+        "changeStatus": "Durum Değiştir"
+    },
+    "nav": {
+        "dashboard": "Panel",
+        "map": "Harita",
+        "issues": "Talepler",
+        "activity": "Akış",
+        "admin": "Yönetim",
+        "unit_analytics": "Analiz",
+        "unit_queue": "İş Listesi"
+    },
+    "landing": {
+        "heroTag": "Muğla İçin Dijital Çözüm",
+        "heroTitle1": "Şehrimiz için",
+        "heroTitle2": "çözümün parçası ol",
+        "heroDesc": "Ulaşım, altyapı veya çevre sorunlarını saniyeler içinde bildirin. Süreci takip edin, şehrimizin gelişimine katkıda bulunun.",
+        "reportBtn": "Hemen Sorun Bildir",
+        "myIssuesBtn": "Taleplerim (Yakında)",
+        "stats": {
+            "issues": "Oluşturulan Kayıt",
+            "resolution": "Çözüm Oranı",
+            "responseTime": "Ort. Yanıt Süresi",
+            "districts": "İlçe Kapsamı"
+        },
+        "howItWorks": {
+            "title": "Nasıl Çalışır?",
+            "desc": "Karmaşık bürokrasi yok. Üç basit adımda talebinizi ilgili birime ulaştırıyoruz.",
+            "step1": {
+                "title": "Sorunu Bildir",
+                "desc": "Konum ve fotoğraf ekleyerek sorunu bize iletin."
+            },
+            "step2": {
+                "title": "İlgili Birime İletilsin",
+                "desc": "Yapay zeka desteğiyle bildiriminiz anında doğru birimde."
+            },
+            "step3": {
+                "title": "Çözümü Takip Et",
+                "desc": "Süreç boyunca SMS ve uygulama üzerinden haberdar olun."
+            }
+        }
+    },
+    "issueDetail": {
+        "notFoundTitle": "Kayıt Bulunamadı",
+        "notFoundDesc": "Aradığınız talep sistemde mevcut değil veya erişim izniniz kısıtlı olabilir.",
+        "backToList": "Listeye Dön",
+        "idLabel": "Bildirim ID",
+        "status": "Durum",
+        "priority": "Öncelik",
+        "category": "Kategori",
+        "description": "Detaylı Açıklama",
+        "photos": "Eklenen Fotoğraflar",
+        "location": "Konum Bilgisi",
+        "district": "İlçe / Mahalle",
+        "address": "Açık Adres / Sokak",
+        "reporter": "Bildiren",
+        "createdAt": "Oluşturma",
+        "assignedUnit": "Atanan Birim",
+        "notAssigned": "Atanmadı",
+        "assignedDesc": "Sorumlu Birim",
+        "pendingAssignment": "Henüz birim atanmamış"
+    },
+    "issues": {
+        "title": "Talepler",
+        "descCitizen": "Muğla genelinde oluşturduğunuz tüm bildirimlerin listesi.",
+        "descMukhtar": "Mahallenizdeki vatandaş bildirimleri.",
+        "descUnit": "Birimize iletilen işlerin listesi.",
+        "descAdmin": "Sistemdeki tüm kayıtlar.",
+        "searchLabel": "Arama",
+        "searchPlaceholder": "No, Başlık, İçerik...",
+        "statusLabel": "Durum",
+        "priorityLabel": "Öncelik",
+        "allFilter": "Tümü",
+        "emptyTitle": "Kayıt Bulunamadı",
+        "emptyDesc": "Seçilen kriterlere uygun herhangi bir talep bulunmuyor."
+    },
+    "login": {
+        "title": "Sisteme Giriş Yap",
+        "desc": "Kurumsal roller için giriş gereklidir.",
+        "citizenLink": "Vatandaş iseniz",
+        "backToHome": "ana sayfaya dönün",
+        "loading": "Yükleniyor..."
+    },
+    "createIssue": {
+        "title": "Sorun Bildir",
+        "desc": "Muğla Ulaşım Dijital Asistanı ile sorunları hızlıca çözüme kavuşturun."
+    },
+    "issueForm": {
+        "step1Title": "1. Konum Seçimi",
+        "step1Desc": "Bildirimin yapılacağı konumu belirleyin.",
+        "tabs": {
+            "map": "Harita Üzerinden",
+            "address": "Adres Formu"
+        },
+        "mapHint": "👆 Haritaya dokunarak pin bırakın",
+        "mapLoading": "Harita Yükleniyor...",
+        "selectedLoc": "Seçilen",
+        "noLoc": "Konum seçilmedi",
+        "clear": "Temizle",
+        "continue": "Devam Et",
+        "step2Title": "2. Detaylar",
+        "step2Desc": "Sorun hakkında bilgi verin.",
+        "back": "Geri",
+        "fields": {
+            "category": "Kategori",
+            "categorySelect": "Seçiniz",
+            "title": "Başlık",
+            "titlePlaceholder": "Örn: Logar Kapağı Kırık",
+            "description": "Açıklama",
+            "descriptionPlaceholder": "Detaylı bilgi...",
+            "descriptionHint": "Lütfen sorunu detaylıca açıklayın.",
+            "contactTitle": "İletişim Bilgileriniz (İsteğe Bağlı)",
+            "fullName": "Ad Soyad",
+            "phone": "Telefon",
+            "district": "İlçe",
+            "neighborhood": "Mahalle",
+            "addressDescription": "Açık Adres"
+        },
+        "submit": "Bildirimi Tamamla",
+        "errors": {
+            "category": "Kategori seçiniz",
+            "title": "Başlık giriniz",
+            "description": "Açıklama giriniz",
+            "selectLocation": "Lütfen haritadan konum seçiniz."
+        },
+        "draftPrompt": "Yarım kalan bildirim taslağınız bulundu. Devam etmek ister misiniz?"
+    },
+    "dashboard": {
+        "greeting": "Merhaba, {name}",
+        "citizenSubTitle": "Muğla'nın gelişimine katkıda bulunduğun için teşekkürler.",
+        "systemSubTitle": "Sistem paneline hoş geldiniz.",
+        "createCard": {
+            "title": "Yeni Bildirim",
+            "descCitizen": "Gördüğünüz bir aksaklığı hızlıca bize bildirin.",
+            "descSystem": "Sisteme manuel olarak yeni bir bildirim girişi yapın.",
+            "button": "Bildirim Oluştur"
+        },
+        "listCard": {
+            "titleCitizen": "Bildirimlerim",
+            "titleMukhtar": "Mahalle Bildirimleri",
+            "titleUnit": "Birim Gelen Kutusu",
+            "titleCallCenter": "Tüm Bildirimler",
+            "desc": "Bildirimlerin durumunu takip edin ve detayları görüntüleyin.",
+            "button": "Listeye Git"
+        },
+        "statsCard": {
+            "title": "Genel Durum (Haftalık)",
+            "openIssues": "Açık İş",
+            "resolvedIssues": "Çözülen"
+        },
+        "helpBanner": {
+            "title": "Daha fazla yardıma mı ihtiyacınız var?",
+            "desc": "Sıkça sorulan sorulara göz atabilir veya çözüm merkezimizi arayabilirsiniz.",
+            "button": "Yardım Merkezi"
+        }
+    },
+    "timeline": {
+        "title": "Süreç Geçmişi",
+        "internal": "Dahili"
+    },
+    "actions": {
+        "confirmStatus": "Durumu değiştirmek istediğinize emin misiniz?",
+        "unitOfficial": "Birim Yetkilisi",
+        "callCenter": "Çağrı Merkezi",
+        "takeAction": "İşleme Al",
+        "resolveAction": "Çözüldü Olarak İşaretle",
+        "resolvedMessage": "Bu talep çözümlenmiştir.",
+        "editAction": "Birim/Öncelik Düzenle",
+        "closeAction": "Kapat (Çözüldü)",
+        "dialogTitle": "Talebi Düzenle",
+        "assignUnit": "Birim Ata",
+        "select": "Seçiniz",
+        "noteLabel": "İşlem Notu",
+        "notePlaceholder": "Değişiklik sebebi...",
+        "cancel": "İptal",
+        "save": "Kaydet"
+    },
+    "map": {
+        "locateMe": "Konumumu Bul",
+        "resetCenter": "Merkeze Dön",
+        "errorLocate": "Konum alınamadı",
+        "selectedLoc": "Seçilen Konum"
+    },
+    "loginForm": {
+        "loginTitle": "Giriş Yap",
+        "errorAuth": "Hatalı giriş bilgileri. Lütfen kontrol ediniz.",
+        "loggingIn": "Giriş Yapılıyor...",
+        "mukhtarDesc": "Mahalle muhtarları için giriş paneli.",
+        "unitDesc": "Belediye birim yetkilileri için giriş paneli.",
+        "callCenterDesc": "Çağrı merkezi operatörleri için giriş paneli.",
+        "usernameLabel": "Kullanıcı Adı",
+        "unitCodeLabel": "Birim Kodu",
+        "operatorIdLabel": "Operatör ID",
+        "passwordLabel": "Şifre",
+        "demoHint": "Demo için şifre: {password}",
+        "submit": "Giriş Yap"
+    },
+    "roles": {
+        "citizen": "Vatandaş",
+        "mukhtar": "Muhtar",
+        "unit": "Birim Yetkilisi",
+        "call_center": "Çağrı Merkezi"
+    },
+    "auth": {
+        "logout": "Çıkış",
+        "login": "Giriş Yap"
+    },
+    "publicLayout": {
+        "subTitle": "Muğla Ulaşım",
+        "reportButton": "Sorun Bildir",
+        "copyright": "© 2026 Muğla Büyükşehir Belediyesi",
+        "privacy": "Gizlilik",
+        "terms": "Kullanım Şartları",
+        "contact": "İletişim"
+    }
+}
