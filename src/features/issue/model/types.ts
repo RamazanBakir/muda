@@ -39,6 +39,9 @@ export interface IssueMedia {
     videos?: string[];
 }
 
+// AI Decision payload (imported type)
+import type { AIDecision } from "@/features/ai/model/types";
+
 export interface Issue {
     id: string;
     title: string;
@@ -59,6 +62,9 @@ export interface Issue {
     tags?: string[];
 
     timeline: IssueTimelineItem[];
+    
+    // AI Decision payload (Sprint 7 - AI Experience Layer)
+    ai?: AIDecision;
 }
 
 export interface IssueDraft {

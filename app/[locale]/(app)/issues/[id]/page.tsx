@@ -26,9 +26,11 @@ import {
     Building2,
     Calendar,
     Tag,
-    MapPinOff
+    MapPinOff,
+    Sparkles
 } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
+import { AIInsightCard, AIBadge } from "@/features/ai/ui";
 
 // Dynamic imports for Leaflet components (client-side only)
 const MiniMapView = dynamic(
@@ -123,6 +125,13 @@ export default function IssueDetailPage() {
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[hsl(var(--neutral-2))] rounded-md border border-[hsl(var(--neutral-4))] text-xs font-medium text-[hsl(var(--neutral-7))]">
                             {td('idLabel')}: {issue.id}
                         </span>
+                        {issue.ai && (
+                            <AIBadge 
+                                confidence={issue.ai.overallConfidence} 
+                                decidedBy={issue.ai.finalDecision?.decidedBy}
+                                size="sm"
+                            />
+                        )}
                         <span className="text-[hsl(var(--neutral-5))]">•</span>
                         <span className="text-xs text-muted-fg">
                             {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true, locale: dateLocale })}
@@ -226,6 +235,35 @@ export default function IssueDetailPage() {
 
                 <div className="space-y-4">
                     <IssueDetailActions issue={issue} role={session.role} onUpdate={setIssue} />
+                    
+                    {/* AI Insight Card - visible for call_center and unit roles */}
+                    {issue.ai && (session.role === "call_center" || session.role === "unit") && (
+                        <AIInsightCard 
+                            aiDecision={issue.ai} 
+                            readOnly={true}
+                            compact={true}
+                        />
+                    )}
+
+                    {/* Simplified AI info for mukhtar */}
+                    {issue.ai && session.role === "mukhtar" && (
+                        <div className={cn(
+                            "p-4 rounded-lg",
+                            "bg-gradient-to-br from-[hsl(var(--blue-1))] to-[hsl(var(--surface))]",
+                            "border border-[hsl(var(--blue-3))]"
+                        )}>
+                            <div className="flex items-center gap-2 mb-2">
+                                <Sparkles size={14} className="text-[hsl(var(--blue-6))]" />
+                                <span className="text-sm font-medium text-[hsl(var(--neutral-9))]">
+                                    Sistem Yönlendirmesi
+                                </span>
+                            </div>
+                            <p className="text-xs text-[hsl(var(--neutral-7))]">
+                                Bu bildirim, sistem tarafından {issue.ai.predictedUnit.value.name} birimine yönlendirilmiştir.
+                                {issue.ai.finalDecision?.decidedBy === "human" && " (Manuel düzeltme yapılmıştır)"}
+                            </p>
+                        </div>
+                    )}
                     
                     <InfoCard title={td('reporter')} icon={<User size={14} />}>
                         <div className="flex items-center gap-3">

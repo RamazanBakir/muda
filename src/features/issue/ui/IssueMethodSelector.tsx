@@ -13,7 +13,8 @@ import { MUG_CENTER } from "@/features/map/lib/config";
 import { FormField } from "@/shared/ui/form-field";
 import { storage } from "@/shared/lib/storage";
 import { useTranslations } from "next-intl";
-import { MapPin, Map as MapIcon, Home, CheckCircle2, ChevronRight, ArrowLeft } from "lucide-react";
+import { MapPin, Map as MapIcon, Home, CheckCircle2, ChevronRight, ArrowLeft, Sparkles, ChevronDown } from "lucide-react";
+import { generateAIDecision } from "@/features/ai";
 
 // Lazy load Map to avoid SSR issues
 const MapView = dynamic(() => import("@/features/map/ui/MapView").then(m => m.MapView), {
@@ -54,6 +55,16 @@ export function IssueMethodSelector() {
     });
 
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [showAIHint, setShowAIHint] = useState(false);
+    
+    // Generate AI preview when description changes
+    const aiPreview = formData.desc.length > 20 
+        ? generateAIDecision({
+            description: formData.desc,
+            category: formData.category as any || undefined,
+            location: location ? { lat: location.lat, lng: location.lng } : undefined,
+        })
+        : null;
 
     // Restore Draft
     useEffect(() => {
@@ -281,6 +292,55 @@ export function IssueMethodSelector() {
                             onChange={e => setFormData({ ...formData, desc: e.target.value })}
                         />
                     </FormField>
+
+                    {/* Citizen-friendly AI Hint */}
+                    {aiPreview && (
+                        <div className={cn(
+                            "p-3 rounded-lg",
+                            "bg-gradient-to-r from-[hsl(var(--blue-1))] to-[hsl(var(--surface))]",
+                            "border border-[hsl(var(--blue-3))]"
+                        )}>
+                            <button
+                                type="button"
+                                onClick={() => setShowAIHint(!showAIHint)}
+                                className="w-full flex items-center justify-between text-left"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Sparkles size={14} className="text-[hsl(var(--blue-6))]" />
+                                    <span className="text-sm font-medium text-[hsl(var(--neutral-9))]">
+                                        Sistem uygun birime yönlendirecek
+                                    </span>
+                                </div>
+                                <ChevronDown 
+                                    size={14} 
+                                    className={cn(
+                                        "text-[hsl(var(--neutral-6))] transition-transform",
+                                        showAIHint && "rotate-180"
+                                    )} 
+                                />
+                            </button>
+                            {showAIHint && (
+                                <div className="mt-3 pt-3 border-t border-[hsl(var(--blue-3)/0.5)] text-xs space-y-2">
+                                    <p className="text-[hsl(var(--neutral-7))]">
+                                        Bildiriminiz analiz edildi. Öngörülen yönlendirme:
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                        <span className="px-2 py-1 rounded bg-[hsl(var(--blue-2))] text-[hsl(var(--blue-8))] font-medium">
+                                            {aiPreview.predictedUnit.value.name}
+                                        </span>
+                                        <span className="px-2 py-1 rounded bg-[hsl(var(--neutral-2))] text-[hsl(var(--neutral-8))] font-medium">
+                                            %{Math.round(aiPreview.overallConfidence * 100)} güvenirlik
+                                        </span>
+                                    </div>
+                                    {aiPreview.overallConfidence < 0.6 && (
+                                        <p className="text-[hsl(var(--amber-7))]">
+                                            💡 Daha iyi yönlendirme için detaylı bir açıklama ekleyebilirsiniz.
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     {/* Optional Contact */}
                     <div className="p-4 rounded-[var(--radius-md)] space-y-3 bg-[hsl(var(--neutral-2))] border border-[hsl(var(--neutral-3))]">

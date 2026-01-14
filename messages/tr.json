@@ -69,7 +69,9 @@
         "activity": "Akış",
         "admin": "Yönetim",
         "unit_analytics": "Analiz",
-        "unit_queue": "İş Listesi"
+        "unit_queue": "İş Listesi",
+        "ai_triage": "AI Triaj",
+        "ai_system": "AI Sistem"
     },
     "landing": {
         "heroTag": "Muğla İçin Dijital Çözüm",
@@ -135,7 +137,8 @@
         "priorityLabel": "Öncelik",
         "allFilter": "Tümü",
         "emptyTitle": "Kayıt Bulunamadı",
-        "emptyDesc": "Seçilen kriterlere uygun herhangi bir talep bulunmuyor."
+        "emptyDesc": "Seçilen kriterlere uygun herhangi bir talep bulunmuyor.",
+        "timelineLabel": "Süreç Geçmişi"
     },
     "login": {
         "title": "Sisteme Giriş Yap",
@@ -215,6 +218,16 @@
             "title": "Daha fazla yardıma mı ihtiyacınız var?",
             "desc": "Sıkça sorulan sorulara göz atabilir veya çözüm merkezimizi arayabilirsiniz.",
             "button": "Yardım Merkezi"
+        },
+        "aiTriageCard": {
+            "title": "AI Triaj Merkezi",
+            "desc": "Yapay zekâ destekli bildirim yönlendirme ve önceliklendirme",
+            "button": "Triaj Paneline Git"
+        },
+        "aiSystemCard": {
+            "title": "AI Sistem Durumu",
+            "desc": "Yapay zekâ performans metrikleri ve analiz",
+            "button": "Metrikleri Görüntüle"
         }
     },
     "timeline": {
@@ -275,5 +288,36 @@
         "privacy": "Gizlilik",
         "terms": "Kullanım Şartları",
         "contact": "İletişim"
+    },
+    "ai": {
+        "insightTitle": "Yapay Zekâ Önerisi",
+        "modelVersion": "Model Versiyonu",
+        "lowConfidenceTitle": "Düşük Güvenirlik",
+        "lowConfidenceDesc": "Daha doğru yönlendirme için ek bilgi gerekebilir.",
+        "reasonsTitle": "Analiz Sonuçları",
+        "suggestedActions": "Önerilen İşlemler",
+        "applyBtn": "Öneriyi Uygula",
+        "overrideBtn": "Düzenle",
+        "rerunBtn": "Yeniden Analiz",
+        "overrideDialogTitle": "AI Önerisini Düzenle",
+        "overrideDialogDesc": "Yapay zekâ önerisini değiştirin. Bu geri bildirim, sistemin öğrenmesine yardımcı olur.",
+        "signals": {
+            "text": "Metin Analizi",
+            "location": "Konum Bilgisi",
+            "photo": "Fotoğraf",
+            "history": "Geçmiş Veriler"
+        },
+        "timeline": {
+            "aiCreated": "AI önerisi oluşturuldu",
+            "aiApplied": "AI önerisi uygulandı",
+            "humanOverride": "İnsan tarafından düzeltildi"
+        },
+        "citizenHint": "Sistem, bildiriminizi en doğru birime yönlendirmek için analiz etti.",
+        "citizenDetail": "Daha iyi yönlendirme için kısa bir detay ekleyebilirsiniz.",
+        "systemRouting": "Sistem Yönlendirmesi",
+        "badge": {
+            "ai": "AI",
+            "manual": "Manuel"
+        }
     }
 }

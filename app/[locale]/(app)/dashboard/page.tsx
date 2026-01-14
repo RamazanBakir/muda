@@ -7,7 +7,7 @@ import { Button } from "@/shared/ui/button";
 import { PageHeader } from "@/shared/ui/page-header";
 import { useSession } from "@/features/auth";
 import { useTranslations, useLocale } from "next-intl";
-import { Plus, List, HelpCircle, ArrowRight } from "lucide-react";
+import { Plus, List, HelpCircle, ArrowRight, Sparkles, Cpu } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 
 export default function DashboardPage() {
@@ -112,6 +112,57 @@ export default function DashboardPage() {
                                 </div>
                             </div>
                         </CardContent>
+                    </Card>
+                )}
+
+                {/* AI Triage Card - Call Center & Unit */}
+                {(role === 'call_center' || role === 'unit') && (
+                    <Card className="group bg-gradient-to-br from-[hsl(var(--blue-1))] to-[hsl(var(--surface))] border-[hsl(var(--blue-3))]">
+                        <CardHeader>
+                            <div className={cn(
+                                "h-10 w-10 rounded-lg flex items-center justify-center mb-3",
+                                "bg-[hsl(var(--blue-6))] text-white"
+                            )}>
+                                <Sparkles size={20} strokeWidth={2} />
+                            </div>
+                            <CardTitle>{t('aiTriageCard.title') || 'AI Triaj Merkezi'}</CardTitle>
+                            <CardDescription>
+                                {t('aiTriageCard.desc') || 'Yapay zekâ destekli bildirim yönlendirme ve önceliklendirme'}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardFooter className="mt-2">
+                            <Link href="/call-center/triage" className="w-full">
+                                <Button className="w-full">
+                                    {t('aiTriageCard.button') || 'Triaj Paneline Git'}
+                                    <ArrowRight className="ml-2 w-4 h-4" />
+                                </Button>
+                            </Link>
+                        </CardFooter>
+                    </Card>
+                )}
+
+                {/* AI System Card - Call Center & Unit */}
+                {(role === 'call_center' || role === 'unit') && (
+                    <Card className="group">
+                        <CardHeader>
+                            <div className={cn(
+                                "h-10 w-10 rounded-lg flex items-center justify-center mb-3",
+                                "bg-[hsl(var(--neutral-2))] text-[hsl(var(--neutral-8))]"
+                            )}>
+                                <Cpu size={20} strokeWidth={2} />
+                            </div>
+                            <CardTitle>{t('aiSystemCard.title') || 'AI Sistem Durumu'}</CardTitle>
+                            <CardDescription>
+                                {t('aiSystemCard.desc') || 'Yapay zekâ performans metrikleri ve analiz'}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardFooter className="mt-2">
+                            <Link href="/ai" className="w-full">
+                                <Button variant="outline" className="w-full">
+                                    {t('aiSystemCard.button') || 'Metrikleri Görüntüle'}
+                                </Button>
+                            </Link>
+                        </CardFooter>
                     </Card>
                 )}
             </div>

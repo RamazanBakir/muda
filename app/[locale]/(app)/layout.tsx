@@ -17,7 +17,10 @@ import {
     ClipboardList,
     BarChart3,
     Inbox,
-    Home
+    Home,
+    Sparkles,
+    ListFilter,
+    Cpu
 } from "lucide-react";
 
 const DevToolsWrapper = dynamic(
@@ -53,6 +56,12 @@ export default function AppLayout({
     if (session.role === 'unit') {
         navItems.push({ label: t('nav.unit_analytics'), href: "/unit/analytics", icon: BarChart3 });
         navItems.push({ label: t('nav.unit_queue'), href: "/unit/issues", icon: Inbox });
+    }
+
+    // AI pages for call_center and unit roles
+    if (session.role === 'call_center' || session.role === 'unit') {
+        navItems.push({ label: t('nav.ai_triage') || "AI Triaj", href: "/call-center/triage", icon: Sparkles });
+        navItems.push({ label: t('nav.ai_system') || "AI Sistem", href: "/ai", icon: Cpu });
     }
 
     return (

@@ -8,6 +8,7 @@ import { formatDistanceToNow } from "date-fns";
 import * as dateLocales from "date-fns/locale";
 import { useTranslations, useLocale } from "next-intl";
 import { StatusBadge, PriorityBadge } from "@/shared/ui/badge/status-badge";
+import { AIBadge } from "@/features/ai/ui";
 import { MapPin, Clock, Hash, ArrowUpRight } from "lucide-react";
 
 interface IssueCardProps {
@@ -32,6 +33,14 @@ export function IssueCard({ issue, className }: IssueCardProps) {
                         <div className="flex gap-1.5 flex-wrap items-center">
                             <StatusBadge status={issue.status} showIcon />
                             <PriorityBadge priority={issue.priority} showIcon />
+                            {issue.ai && (
+                                <AIBadge 
+                                    confidence={issue.ai.overallConfidence} 
+                                    decidedBy={issue.ai.finalDecision?.decidedBy}
+                                    size="xs"
+                                    showIcon={false}
+                                />
+                            )}
                         </div>
                         <div className={cn(
                             "flex items-center gap-0.5 px-1.5 py-0.5 rounded",

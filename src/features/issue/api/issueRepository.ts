@@ -1,9 +1,48 @@
 import { Issue, IssueStatus, IssuePriority, IssueCategory, AssignedTo } from "../model/types";
 import { UserRole } from "@/features/auth/model/types";
 import { activityRepository } from "@/features/activity";
+import { generateAIDecision } from "@/features/ai";
+import { AIDecision } from "@/features/ai/model/types";
 import { v4 as uuidv4 } from "uuid";
 
 const STORAGE_KEY = "muda_issues";
+
+// --- MOCK AI DECISIONS ---
+const createMockAIDecision = (
+    category: IssueCategory, 
+    unitId: string, 
+    unitName: string, 
+    priority: IssuePriority,
+    confidence: number,
+    decidedBy: "ai" | "human" = "ai"
+): AIDecision => ({
+    isEnabled: true,
+    modelVersion: "MUDA-v1.2.0-beta",
+    predictedCategory: { value: category, confidence },
+    predictedUnit: { value: { id: unitId, name: unitName }, confidence },
+    predictedPriority: { value: priority, confidence: confidence - 0.05 },
+    overallConfidence: confidence,
+    reasons: [
+        "Metin analizi ile kategori belirlendi",
+        "Konum bilgisi değerlendirildi",
+        confidence > 0.8 ? "Yüksek güvenirlikle eşleşme sağlandı" : "Benzer kayıtlar incelendi"
+    ],
+    signals: [
+        { type: "text", label: "Metin analizi", weight: confidence },
+        { type: "location", label: "Konum: Belirlendi", weight: 0.75 }
+    ],
+    suggestedActions: confidence < 0.6 ? [{ type: "request_info", label: "Daha fazla detay istenmesi önerilir" }] : [],
+    createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+    processingTimeMs: Math.floor(Math.random() * 50) + 20,
+    finalDecision: {
+        category,
+        unitId,
+        unitName,
+        priority,
+        decidedBy,
+        decidedAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+    }
+});
 
 // --- MOCK DATA ---
 const MOCK_ISSUES: Issue[] = [
@@ -27,7 +66,8 @@ const MOCK_ISSUES: Issue[] = [
         media: { photos: [] },
         timeline: [
             { status: "created", by: "Ahmet Yılmaz", date: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString() }
-        ]
+        ],
+        ai: createMockAIDecision("transportation", "unit-roads", "Yol Bakım ve Ulaşım", "high", 0.89)
     },
     {
         id: "ISS-1002",
@@ -61,7 +101,8 @@ const MOCK_ISSUES: Issue[] = [
             { status: "created", by: "Mehmet Demir", date: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString() },
             { status: "triaged", by: "Çağrı Merkezi", date: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString() },
             { status: "in_progress", by: "Aydınlatma Şefliği", date: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), note: "Ekip yönlendirildi." }
-        ]
+        ],
+        ai: createMockAIDecision("parks", "unit-parks", "Park ve Bahçeler", "medium", 0.72, "human")
     },
     // ... Add more diverse data for heatmap later or let user add them via live sim
     {
@@ -86,8 +127,63 @@ const MOCK_ISSUES: Issue[] = [
         },
         timeline: [
             { status: "created", by: "Fatma Şahin", date: new Date(Date.now() - 1000 * 60 * 120).toISOString() },
-            { status: "in_progress", by: "Su ve Kanalizasyon", date: new Date(Date.now() - 1000 * 60 * 10).toISOString() }
-        ]
+            { status: "in_progress", by: "Su ve Kanalizasyon", date: new Date(Date.now() - 1000 * 60 * 10).toISOString() },
+            { status: "in_progress", by: "AI Sistemi", date: new Date(Date.now() - 1000 * 60 * 119).toISOString(), note: "AI önerisi oluşturuldu ve uygulandı", isInternal: true }
+        ],
+        ai: createMockAIDecision("water_sewer", "unit-water", "Su ve Kanalizasyon", "high", 0.93)
+    },
+    {
+        id: "ISS-1008",
+        title: "Çöp Konteyneri Taşıyor",
+        description: "Mahalle girişindeki konteyner haftalardır boşaltılmıyor, çevreye kötü koku yayılıyor.",
+        location: { lat: 37.220, lng: 28.370, district: "mentese", neighborhood: "muslubahce", addressText: "Muslubahçe Mh. Pazar Yeri Karşısı" },
+        category: "waste",
+        priority: "medium",
+        status: "created",
+        createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+        updatedAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+        reporter: { type: "citizen", id: "user-4", name: "Ali Kara" },
+        media: { photos: [] },
+        timeline: [
+            { status: "created", by: "Ali Kara", date: new Date(Date.now() - 1000 * 60 * 45).toISOString() }
+        ],
+        ai: createMockAIDecision("waste", "unit-waste", "Temizlik İşleri", "medium", 0.55)
+    },
+    {
+        id: "ISS-1009",
+        title: "Park Bankları Kırık",
+        description: "Çocuk parkındaki bankların çoğu kırılmış, oturulamıyor.",
+        location: { lat: 37.025, lng: 27.430, district: "bodrum", neighborhood: "turgutreis", addressText: "Turgutreis Mh. Sahil Parkı" },
+        category: "parks",
+        priority: "low",
+        status: "triaged",
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
+        updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
+        reporter: { type: "mukhtar", id: "mukhtar-2", name: "Zeynep Aydın" },
+        assignedUnit: { id: "unit-parks", name: "Park ve Bahçeler" },
+        media: { photos: ["https://images.unsplash.com/photo-1568393691622-c7ba131d63b4?w=800&q=80"] },
+        timeline: [
+            { status: "created", by: "Zeynep Aydın", date: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString() },
+            { status: "triaged", by: "Çağrı Merkezi", date: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(), note: "AI önerisi manuel olarak düzeltildi" }
+        ],
+        ai: {
+            ...createMockAIDecision("parks", "unit-parks", "Park ve Bahçeler", "low", 0.81),
+            finalDecision: {
+                category: "parks",
+                unitId: "unit-parks",
+                unitName: "Park ve Bahçeler",
+                priority: "low",
+                decidedBy: "human",
+                decidedAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
+                humanOverride: {
+                    byRole: "call_center",
+                    byName: "Operatör Ayşe",
+                    reason: "Öncelik düşürüldü - acil değil",
+                    originalPriority: "medium",
+                    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString()
+                }
+            }
+        }
     }
 ];
 
@@ -242,9 +338,17 @@ export const issueRepository = {
         this.saveIssuesToStorage(issues);
     },
 
-    async createIssue(issueData: Omit<Issue, "id" | "createdAt" | "updatedAt" | "timeline" | "status" | "media">): Promise<Issue> {
+    async createIssue(issueData: Omit<Issue, "id" | "createdAt" | "updatedAt" | "timeline" | "status" | "media" | "ai">): Promise<Issue> {
         await new Promise(resolve => setTimeout(resolve, 800));
         const issues = this.getIssuesFromStorage();
+
+        // Generate AI decision for the new issue
+        const aiDecision = generateAIDecision({
+            description: issueData.description,
+            category: issueData.category,
+            location: issueData.location,
+            hasPhoto: false,
+        });
 
         const newIssue: Issue = {
             ...issueData,
@@ -253,11 +357,21 @@ export const issueRepository = {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             media: { photos: [] },
-            timeline: [{
-                status: "created",
-                by: issueData.reporter.name,
-                date: new Date().toISOString()
-            }]
+            timeline: [
+                {
+                    status: "created",
+                    by: issueData.reporter.name,
+                    date: new Date().toISOString()
+                },
+                {
+                    status: "created",
+                    by: "AI Sistemi",
+                    date: new Date().toISOString(),
+                    note: `AI önerisi oluşturuldu: ${aiDecision.predictedUnit.value.name} (%${Math.round(aiDecision.overallConfidence * 100)} güvenirlik)`,
+                    isInternal: true
+                }
+            ],
+            ai: aiDecision
         };
 
         issues.unshift(newIssue);
@@ -266,5 +380,162 @@ export const issueRepository = {
         activityRepository.logIssueChange(newIssue, "issue_created", "Yeni bildirim oluşturuldu.", { name: newIssue.reporter.name, role: newIssue.reporter.type }, true);
 
         return newIssue;
+    },
+
+    /**
+     * Apply AI suggestion to an issue
+     */
+    async applyAISuggestion(issueId: string, actor: { name: string, role: string }): Promise<Issue> {
+        const issues = this.getIssuesFromStorage();
+        const index = issues.findIndex(i => i.id === issueId);
+        if (index === -1) throw new Error("Issue not found");
+        
+        const issue = issues[index];
+        if (!issue.ai) throw new Error("No AI decision found");
+        
+        // Apply AI suggestions
+        issue.category = issue.ai.predictedCategory.value;
+        issue.priority = issue.ai.predictedPriority.value;
+        issue.assignedUnit = {
+            id: issue.ai.predictedUnit.value.id,
+            name: issue.ai.predictedUnit.value.name
+        };
+        issue.status = "triaged";
+        issue.updatedAt = new Date().toISOString();
+        
+        // Update AI final decision
+        issue.ai.finalDecision = {
+            category: issue.ai.predictedCategory.value,
+            unitId: issue.ai.predictedUnit.value.id,
+            unitName: issue.ai.predictedUnit.value.name,
+            priority: issue.ai.predictedPriority.value,
+            decidedBy: "ai",
+            decidedAt: new Date().toISOString()
+        };
+        
+        // Add timeline entry
+        issue.timeline.unshift({
+            status: "triaged",
+            by: actor.name,
+            date: new Date().toISOString(),
+            note: `AI önerisi uygulandı: ${issue.ai.predictedUnit.value.name}`,
+            isInternal: false
+        });
+        
+        issues[index] = issue;
+        this.saveIssuesToStorage(issues);
+        
+        activityRepository.logIssueChange(issue, "ai_applied", `AI önerisi uygulandı.`, actor, true);
+        
+        return issue;
+    },
+
+    /**
+     * Override AI suggestion with human decision
+     */
+    async overrideAISuggestion(
+        issueId: string, 
+        override: {
+            category: IssueCategory;
+            unitId: string;
+            unitName: string;
+            priority: IssuePriority;
+            reason: string;
+        },
+        actor: { name: string, role: string }
+    ): Promise<Issue> {
+        const issues = this.getIssuesFromStorage();
+        const index = issues.findIndex(i => i.id === issueId);
+        if (index === -1) throw new Error("Issue not found");
+        
+        const issue = issues[index];
+        if (!issue.ai) throw new Error("No AI decision found");
+        
+        // Store original values for reference
+        const originalCategory = issue.ai.predictedCategory.value;
+        const originalUnitId = issue.ai.predictedUnit.value.id;
+        const originalPriority = issue.ai.predictedPriority.value;
+        
+        // Apply human override
+        issue.category = override.category;
+        issue.priority = override.priority;
+        issue.assignedUnit = {
+            id: override.unitId,
+            name: override.unitName
+        };
+        issue.status = "triaged";
+        issue.updatedAt = new Date().toISOString();
+        
+        // Update AI final decision with override
+        issue.ai.finalDecision = {
+            category: override.category,
+            unitId: override.unitId,
+            unitName: override.unitName,
+            priority: override.priority,
+            decidedBy: "human",
+            decidedAt: new Date().toISOString(),
+            humanOverride: {
+                byRole: actor.role,
+                byName: actor.name,
+                reason: override.reason,
+                originalCategory,
+                originalUnitId,
+                originalPriority,
+                timestamp: new Date().toISOString()
+            }
+        };
+        
+        // Add timeline entry
+        issue.timeline.unshift({
+            status: "triaged",
+            by: actor.name,
+            date: new Date().toISOString(),
+            note: `AI önerisi düzeltildi: ${override.unitName} (Sebep: ${override.reason})`,
+            isInternal: false
+        });
+        
+        issues[index] = issue;
+        this.saveIssuesToStorage(issues);
+        
+        activityRepository.logIssueChange(issue, "ai_overridden", `AI önerisi manuel olarak değiştirildi.`, actor, true);
+        
+        return issue;
+    },
+
+    /**
+     * Re-run AI analysis on an issue
+     */
+    async rerunAIAnalysis(issueId: string): Promise<Issue> {
+        const issues = this.getIssuesFromStorage();
+        const index = issues.findIndex(i => i.id === issueId);
+        if (index === -1) throw new Error("Issue not found");
+        
+        const issue = issues[index];
+        
+        // Generate new AI decision
+        const newAiDecision = generateAIDecision({
+            description: issue.description,
+            category: issue.category,
+            location: issue.location,
+            hasPhoto: issue.media.photos.length > 0,
+            photoCount: issue.media.photos.length
+        });
+        
+        issue.ai = newAiDecision;
+        issue.updatedAt = new Date().toISOString();
+        
+        // Add timeline entry
+        issue.timeline.unshift({
+            status: issue.status,
+            by: "AI Sistemi",
+            date: new Date().toISOString(),
+            note: `AI analizi yeniden çalıştırıldı: %${Math.round(newAiDecision.overallConfidence * 100)} güvenirlik`,
+            isInternal: true
+        });
+        
+        issues[index] = issue;
+        this.saveIssuesToStorage(issues);
+        
+        return issue;
     }
 };

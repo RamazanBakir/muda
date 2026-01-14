@@ -69,7 +69,9 @@
         "activity": "Activity",
         "admin": "Admin",
         "unit_analytics": "Analytics",
-        "unit_queue": "Work Queue"
+        "unit_queue": "Work Queue",
+        "ai_triage": "AI Triage",
+        "ai_system": "AI System"
     },
     "landing": {
         "heroTag": "Digital Solution for Muğla",
@@ -215,6 +217,16 @@
             "title": "Need more help?",
             "desc": "You can check frequently asked questions or call our solution center.",
             "button": "Help Center"
+        },
+        "aiTriageCard": {
+            "title": "AI Triage Center",
+            "desc": "AI-assisted notification routing and prioritization",
+            "button": "Go to Triage Panel"
+        },
+        "aiSystemCard": {
+            "title": "AI System Status",
+            "desc": "AI performance metrics and analytics",
+            "button": "View Metrics"
         }
     },
     "timeline": {
