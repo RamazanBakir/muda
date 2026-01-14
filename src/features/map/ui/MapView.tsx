@@ -163,9 +163,9 @@ export function MapView({ className, center = MUG_CENTER, zoom = ZOOM_LEVEL, mar
                 scrollWheelZoom={true}
                 className="h-full w-full outline-none rounded-[var(--radius-lg)]"
                 zoomControl={false}
+                attributionControl={false}
             >
                 <TileLayer
-                    attribution={TILE_PROVIDERS.cartoLight.attribution}
                     url={TILE_PROVIDERS.cartoLight.url}
                 />
 
@@ -198,6 +198,10 @@ export function MapView({ className, center = MUG_CENTER, zoom = ZOOM_LEVEL, mar
 
             </MapContainer>
 
+            {/* Attribution Overlay */}
+            <div className="absolute bottom-2 left-2 z-[400] text-[10px] text-[hsl(var(--neutral-7))] bg-[hsl(var(--surface)/0.9)] px-2 py-1 rounded font-medium shadow-sm">
+                Muğla Büyükşehir Belediyesi
+            </div>
 
             {/* Controls Overlay */}
             <MapControls onLocate={handleLocateMe} onReset={handleReset} />

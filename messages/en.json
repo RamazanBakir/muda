@@ -8,6 +8,27 @@
         "empty": "No data found",
         "actions": "Actions"
     },
+    "media": {
+        "attachments": "Attachments",
+        "photo": "Photo",
+        "video": "Video",
+        "noMedia": "No attachments",
+        "noMediaDesc": "No photos or videos have been added to this request",
+        "videoNotSupported": "Your browser does not support video playback."
+    },
+    "streetView": {
+        "title": "Street View",
+        "button": "Street View",
+        "loading": "Loading map...",
+        "loadingStreetView": "Loading street view...",
+        "openInMaps": "Open in Google Maps",
+        "openFull": "Full Screen",
+        "tryAnother": "Try Another",
+        "coordinates": "Coordinates",
+        "streetViewTab": "Street",
+        "mapTab": "Map",
+        "dragHint": "Drag to change the view"
+    },
     "status": {
         "created": "Created",
         "triaged": "Triaged",
@@ -98,7 +119,9 @@
         "assignedUnit": "Assigned Unit",
         "notAssigned": "Not Assigned",
         "assignedDesc": "Responsible Unit",
-        "pendingAssignment": "No unit assigned yet"
+        "pendingAssignment": "No unit assigned yet",
+        "noCoordinates": "Location coordinates not available",
+        "attachments": "Attachments"
     },
     "issues": {
         "title": "Issues",

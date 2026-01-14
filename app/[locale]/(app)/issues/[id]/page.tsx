@@ -3,6 +3,7 @@
 import { useEffect, useState as useReactState } from "react";
 import { useParams } from "next/navigation";
 import { useRouter } from "@/navigation";
+import dynamic from "next/dynamic";
 import { Container } from "@/shared/ui/container";
 import { Button } from "@/shared/ui/button";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -12,6 +13,7 @@ import { useSession } from "@/features/auth";
 import { issueRepository, Issue } from "@/features/issue";
 import { IssueTimeline } from "@/features/issue/ui/IssueTimeline";
 import { IssueDetailActions } from "@/features/issue/ui/IssueDetailActions";
+import { MediaGallery, MediaEmptyState } from "@/features/issue/ui/MediaGallery";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import * as dateLocales from "date-fns/locale";
@@ -24,9 +26,27 @@ import {
     Building2,
     Calendar,
     Tag,
-    Image as ImageIcon
+    MapPinOff
 } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
+
+// Dynamic imports for Leaflet components (client-side only)
+const MiniMapView = dynamic(
+    () => import("@/features/map/ui/MiniMapView").then(mod => mod.MiniMapView),
+    { 
+        ssr: false,
+        loading: () => (
+            <div className="w-full h-48 bg-[hsl(var(--neutral-2))] animate-pulse flex items-center justify-center">
+                <MapPin className="w-6 h-6 text-[hsl(var(--neutral-5))]" />
+            </div>
+        )
+    }
+);
+
+const StreetViewButton = dynamic(
+    () => import("@/features/map/ui/StreetViewModal").then(mod => mod.StreetViewButton),
+    { ssr: false }
+);
 
 export default function IssueDetailPage() {
     const params = useParams();
@@ -135,18 +155,17 @@ export default function IssueDetailPage() {
                         <p className="whitespace-pre-wrap leading-relaxed text-fg text-sm">
                             {issue.description}
                         </p>
-                        {issue.media.photos.length > 0 && (
-                            <div className="mt-6 pt-4 border-t border-[hsl(var(--neutral-3))]">
-                                <div className="flex items-center gap-2 mb-3 text-xs font-medium text-muted-fg">
-                                    <ImageIcon size={14} />
-                                    {td('photos')}
-                                </div>
-                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                                    <div className="aspect-[4/3] bg-[hsl(var(--neutral-2))] rounded-lg w-full border border-dashed border-[hsl(var(--neutral-4))] flex items-center justify-center text-[hsl(var(--neutral-6))] group cursor-pointer hover:border-[hsl(var(--blue-4))] transition-colors">
-                                        <ImageIcon size={24} className="opacity-30 group-hover:opacity-50 transition-opacity" />
-                                    </div>
-                                </div>
-                            </div>
+                    </SectionCard>
+
+                    {/* Media Gallery - Photos & Videos */}
+                    <SectionCard title={td('attachments') || 'Ekler'}>
+                        {(issue.media.photos.length > 0 || (issue.media.videos && issue.media.videos.length > 0)) ? (
+                            <MediaGallery 
+                                photos={issue.media.photos} 
+                                videos={issue.media.videos} 
+                            />
+                        ) : (
+                            <MediaEmptyState />
                         )}
                     </SectionCard>
 
@@ -160,18 +179,37 @@ export default function IssueDetailPage() {
                         }
                         noPadding
                     >
-                        <div className="w-full h-48 bg-surface-2 flex items-center justify-center text-muted-fg relative">
-                            <div className="flex flex-col items-center">
-                                <div className="h-10 w-10 bg-primary text-primary-fg rounded-full flex items-center justify-center shadow-lg">
-                                    <MapPin size={20} />
+                        {/* Leaflet Map with Street View Button */}
+                        <div className="relative">
+                            {issue.location.lat && issue.location.lng ? (
+                                <>
+                                    <MiniMapView
+                                        lat={issue.location.lat}
+                                        lng={issue.location.lng}
+                                        zoom={16}
+                                        popupContent={issue.location.neighborhood || issue.location.addressText}
+                                        height="h-52"
+                                    />
+                                    {/* Street View Button - positioned on map */}
+                                    <div className="absolute top-3 right-3 z-10">
+                                        <StreetViewButton
+                                            lat={issue.location.lat}
+                                            lng={issue.location.lng}
+                                            address={`${issue.location.neighborhood || ''}, ${issue.location.district || ''}`}
+                                            variant="compact"
+                                        />
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="w-full h-52 bg-[hsl(var(--neutral-2))] flex flex-col items-center justify-center text-[hsl(var(--neutral-6))] gap-2">
+                                    <MapPinOff size={28} className="opacity-50" />
+                                    <span className="text-xs font-medium">{td('noCoordinates') || 'Koordinat bilgisi yok'}</span>
                                 </div>
-                                <div className="mt-3 bg-[hsl(var(--surface))] p-2 rounded-lg shadow-[var(--shadow-md)] border border-[hsl(var(--neutral-4))] text-center max-w-[180px]">
-                                    <span className="font-semibold text-xs text-fg block">{issue.location.neighborhood}</span>
-                                    <span className="text-xs text-muted-fg">{issue.location.addressText || "-"}</span>
-                                </div>
-                            </div>
+                            )}
                         </div>
-                        <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        
+                        {/* Location Details */}
+                        <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[hsl(var(--neutral-3))]">
                             <InfoRow label={td('district')} icon={<Building2 size={14} />}>
                                 {issue.location.district} / {issue.location.neighborhood}
                             </InfoRow>

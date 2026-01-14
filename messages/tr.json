@@ -8,6 +8,27 @@
         "empty": "Veri bulunamadı",
         "actions": "İşlemler"
     },
+    "media": {
+        "attachments": "Ekler",
+        "photo": "Fotoğraf",
+        "video": "Video",
+        "noMedia": "Ek dosya yok",
+        "noMediaDesc": "Bu talep için fotoğraf veya video eklenmemiş",
+        "videoNotSupported": "Tarayıcınız video oynatmayı desteklemiyor."
+    },
+    "streetView": {
+        "title": "Sokak Görünümü",
+        "button": "Sokak Görünümü",
+        "loading": "Harita yükleniyor...",
+        "loadingStreetView": "Sokak görünümü yükleniyor...",
+        "openInMaps": "Google Maps'te Aç",
+        "openFull": "Tam Ekran",
+        "tryAnother": "Farklı Dene",
+        "coordinates": "Koordinatlar",
+        "streetViewTab": "Sokak",
+        "mapTab": "Harita",
+        "dragHint": "Görünümü değiştirmek için sürükleyin"
+    },
     "status": {
         "created": "Oluşturuldu",
         "triaged": "Değerlendirildi",
@@ -98,7 +119,9 @@
         "assignedUnit": "Atanan Birim",
         "notAssigned": "Atanmadı",
         "assignedDesc": "Sorumlu Birim",
-        "pendingAssignment": "Henüz birim atanmamış"
+        "pendingAssignment": "Henüz birim atanmamış",
+        "noCoordinates": "Koordinat bilgisi mevcut değil",
+        "attachments": "Ekler"
     },
     "issues": {
         "title": "Talepler",

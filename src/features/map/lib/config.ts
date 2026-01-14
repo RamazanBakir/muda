@@ -9,11 +9,11 @@ type TileProvider = {
 export const TILE_PROVIDERS: Record<string, TileProvider> = {
     osm: {
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: 'Muğla Büyükşehir Belediyesi'
     },
     // Can add Stadia or CartoDB for cleaner look if needed later
     cartoLight: {
         url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        attribution: 'Muğla Büyükşehir Belediyesi'
     }
 }

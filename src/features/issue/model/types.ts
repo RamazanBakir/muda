@@ -34,6 +34,11 @@ export interface AssignedTo {
     name: string;
 }
 
+export interface IssueMedia {
+    photos: string[];
+    videos?: string[];
+}
+
 export interface Issue {
     id: string;
     title: string;
@@ -43,9 +48,7 @@ export interface Issue {
     priority: IssuePriority;
     location: IssueLocation;
     reporter: IssueReporter;
-    media: {
-        photos: string[];
-    };
+    media: IssueMedia;
     createdAt: string;
     updatedAt: string;
     assignedUnit?: { id: string; name: string }; // Legacy field, keeping for compat or mapping to unit

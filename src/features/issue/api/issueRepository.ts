@@ -49,7 +49,14 @@ const MOCK_ISSUES: Issue[] = [
         assignedUnit: { id: "unit-light", name: "Aydınlatma Şefliği" },
         assignedTo: { type: "team", id: "team-park-a", name: "Park Bahçeler Ekibi" },
         dueAt: new Date(Date.now() + 1000 * 60 * 60 * 4).toISOString(), // 4h remaining
-        media: { photos: [] },
+        media: { 
+            photos: [
+                "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+            ],
+            videos: [
+                "https://www.w3schools.com/html/mov_bbb.mp4"
+            ]
+        },
         timeline: [
             { status: "created", by: "Mehmet Demir", date: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString() },
             { status: "triaged", by: "Çağrı Merkezi", date: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString() },
@@ -60,7 +67,7 @@ const MOCK_ISSUES: Issue[] = [
     {
         id: "ISS-1007",
         title: "Logar Kapağı Açık",
-        description: "Tehlike arz ediyor.",
+        description: "Tehlike arz ediyor. Yaya ve araç trafiği için ciddi bir risk oluşturmaktadır. Acil müdahale gerekmektedir.",
         location: { lat: 37.210, lng: 28.360, district: "mentese", neighborhood: "orhaniye", addressText: "Orhaniye Mh." },
         category: "water_sewer",
         priority: "high",
@@ -69,7 +76,14 @@ const MOCK_ISSUES: Issue[] = [
         updatedAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
         reporter: { type: "citizen", id: "user-3", name: "Fatma Şahin" },
         assignedUnit: { id: "unit-water", name: "Su ve Kanalizasyon" },
-        media: { photos: [] },
+        media: { 
+            photos: [
+                "https://images.unsplash.com/photo-1584467541268-b040f83be3fd?w=800&q=80",
+                "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
+                "https://images.unsplash.com/photo-1590012314607-cda9d9b699ae?w=800&q=80"
+            ],
+            videos: []
+        },
         timeline: [
             { status: "created", by: "Fatma Şahin", date: new Date(Date.now() - 1000 * 60 * 120).toISOString() },
             { status: "in_progress", by: "Su ve Kanalizasyon", date: new Date(Date.now() - 1000 * 60 * 10).toISOString() }
