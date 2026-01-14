@@ -20,7 +20,7 @@ import {
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "@/navigation";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, Locale } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import { cn } from "@/shared/lib/cn";
 import { useLocale, useTranslations } from "next-intl";

@@ -146,7 +146,7 @@ export function generateMockMapData(count: number = 50): MapIssuePoint[] {
     for (let i = 0; i < count; i++) {
         // Select district based on weight
         let randomWeight = Math.random() * totalWeight;
-        let selectedDistrict = MUGLA_DISTRICTS.mentese;
+        let selectedDistrict: typeof MUGLA_DISTRICTS[keyof typeof MUGLA_DISTRICTS] = MUGLA_DISTRICTS.mentese;
         
         for (const district of Object.values(MUGLA_DISTRICTS)) {
             randomWeight -= district.weight;

@@ -7,7 +7,7 @@ import { useSession } from "@/features/auth";
 import { activityRepository, ActivityEvent } from "@/features/activity";
 import { getNotificationsForUser } from "@/features/activity/lib/notificationService";
 import { useEffect, useState, useCallback } from "react";
-import { format, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, Locale } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import { useRouter } from "@/navigation";
 import { 

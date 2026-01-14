@@ -194,8 +194,8 @@ export default function AIMetricsPage() {
                             <div className="mt-2">
                                 <ProgressBar 
                                     value={metrics.avgConfidence * 100} 
-                                    max={100}
-                                    className="h-2"
+                                    size="sm"
+                                    showLabels={false}
                                 />
                             </div>
                         </Card>
