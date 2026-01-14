@@ -5,97 +5,32 @@ import { PageHeader } from "@/shared/ui/page-header";
 import { Card, CardContent } from "@/shared/ui/card";
 import { useSession } from "@/features/auth";
 import { activityRepository, ActivityEvent } from "@/features/activity";
-import { useEffect, useState } from "react";
+import { getNotificationsForUser } from "@/features/activity/lib/notificationService";
+import { useEffect, useState, useCallback } from "react";
 import { format, formatDistanceToNow } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import { useRouter } from "@/navigation";
-import { Check, Clock, User, AlertCircle, MessageSquare, History, ArrowUpRight, Bell, Zap } from "lucide-react";
+import { 
+    Check, 
+    Clock, 
+    User, 
+    AlertCircle, 
+    MessageSquare, 
+    History, 
+    ArrowUpRight, 
+    Zap,
+    Building2,
+    MapPin
+} from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { useTranslations, useLocale } from "next-intl";
 import { EmptyState } from "@/shared/ui/empty-state";
 
-type ActivityType = 'issue_created' | 'status_change' | 'assignment_change' | 'priority_change' | 'note_added';
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STYLING HELPERS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// Mock notifications for demo
-const MOCK_ACTIVITIES: ActivityEvent[] = [
-    {
-        id: "mock-1",
-        type: "status_change",
-        issueId: "ISS-1007",
-        issueTitle: "Su Borusu Patlaması",
-        actorName: "Su ve Kanalizasyon Birimi",
-        actorRole: "Birim",
-        details: "Bildirim 'İşleme Alındı' durumuna güncellendi. Ekipler sahaya yönlendirildi.",
-        timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-        isPublic: true,
-    },
-    {
-        id: "mock-2",
-        type: "assignment_change",
-        issueId: "ISS-1002",
-        issueTitle: "Kaldırım Onarımı",
-        actorName: "Çağrı Merkezi",
-        actorRole: "Operatör",
-        details: "Talep Yol Bakım ve Ulaşım Birimi'ne atandı.",
-        timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-        isPublic: true,
-    },
-    {
-        id: "mock-3",
-        type: "note_added",
-        issueId: "ISS-1005",
-        issueTitle: "Park Aydınlatması",
-        actorName: "Ahmet Yılmaz",
-        actorRole: "Muhtar",
-        details: "Mahalledeki diğer vatandaşlar da aynı sorunu bildirdi. Acil müdahale gerekiyor.",
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-        isPublic: true,
-    },
-    {
-        id: "mock-4",
-        type: "status_change",
-        issueId: "ISS-1003",
-        issueTitle: "Çöp Konteyner Talebi",
-        actorName: "Temizlik İşleri",
-        actorRole: "Birim",
-        details: "Talep başarıyla çözüme kavuşturuldu. Yeni konteyner yerleştirildi.",
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-        isPublic: true,
-    },
-    {
-        id: "mock-5",
-        type: "issue_created",
-        issueId: "ISS-1010",
-        issueTitle: "Trafik Işığı Arızası",
-        actorName: "Vatandaş",
-        actorRole: "Bildirim Sahibi",
-        details: "Kavşaktaki trafik ışıkları çalışmıyor. Trafik akışı tehlikeli durumda.",
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
-        isPublic: true,
-    },
-    {
-        id: "mock-6",
-        type: "priority_change",
-        issueId: "ISS-1008",
-        issueTitle: "Yol Çökmesi",
-        actorName: "AI Sistem",
-        actorRole: "Otomatik",
-        details: "Öncelik 'Yüksek' olarak güncellendi. Güvenlik riski tespit edildi.",
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-        isPublic: true,
-    },
-    {
-        id: "mock-7",
-        type: "assignment_change",
-        issueId: "ISS-1006",
-        issueTitle: "Ağaç Budama Talebi",
-        actorName: "Park ve Bahçeler",
-        actorRole: "Birim",
-        details: "Talep Park ve Bahçeler Müdürlüğü'ne devredildi.",
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 30).toISOString(),
-        isPublic: true,
-    },
-];
+type ActivityType = 'issue_created' | 'status_change' | 'assignment_change' | 'priority_change' | 'note_added';
 
 function getActivityIcon(type: ActivityType) {
     const icons = {
@@ -119,6 +54,186 @@ function getActivityColor(type: ActivityType) {
     return styles[type] || "bg-[hsl(var(--neutral-6))]";
 }
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SUB-COMPONENTS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface RoleBadgeProps {
+    role: string;
+    neighborhoodId?: string;
+    unitName?: string;
+}
+
+function RoleBadge({ role, neighborhoodId, unitName }: RoleBadgeProps) {
+    const t = useTranslations("activity");
+    
+    const getRoleInfo = () => {
+        switch (role) {
+            case "muhtar":
+                return {
+                    icon: <MapPin size={12} />,
+                    label: neighborhoodId ? `${neighborhoodId} Mahallesi` : t("neighborhoodScope"),
+                    color: "bg-[hsl(var(--purple-1))] text-[hsl(var(--purple-7))] border-[hsl(var(--purple-3))]"
+                };
+            case "unit":
+                return {
+                    icon: <Building2 size={12} />,
+                    label: unitName || t("unitScope"),
+                    color: "bg-[hsl(var(--blue-1))] text-[hsl(var(--blue-7))] border-[hsl(var(--blue-3))]"
+                };
+            case "call_center":
+                return {
+                    icon: <History size={12} />,
+                    label: t("allScope"),
+                    color: "bg-[hsl(var(--green-1))] text-[hsl(var(--green-7))] border-[hsl(var(--green-3))]"
+                };
+            default:
+                return null;
+        }
+    };
+
+    const info = getRoleInfo();
+    if (!info) return null;
+
+    return (
+        <div className={cn(
+            "inline-flex items-center gap-1.5",
+            "px-3 py-1.5 rounded-lg",
+            "text-xs font-medium border",
+            info.color
+        )}>
+            {info.icon}
+            {info.label}
+        </div>
+    );
+}
+
+interface ActivityCardProps {
+    activity: ActivityEvent;
+    dateLocale: Locale;
+    onNavigate: (issueId: string) => void;
+    showPublicBadge?: boolean;
+}
+
+function ActivityCard({ activity, dateLocale, onNavigate, showPublicBadge }: ActivityCardProps) {
+    const t = useTranslations("activity");
+    
+    return (
+        <div className="relative pl-11 group">
+            {/* Icon */}
+            <div className={cn(
+                "absolute left-0 top-3",
+                "w-[38px] h-[38px] rounded-xl",
+                "flex items-center justify-center",
+                "text-white shadow-sm",
+                "transition-transform duration-200",
+                "group-hover:scale-110",
+                getActivityColor(activity.type as ActivityType)
+            )}>
+                {getActivityIcon(activity.type as ActivityType)}
+            </div>
+
+            {/* Card */}
+            <Card
+                className={cn(
+                    "cursor-pointer",
+                    "border-[hsl(var(--neutral-4))]",
+                    "hover:border-[hsl(var(--blue-4))]",
+                    "hover:shadow-md",
+                    "transition-all duration-200",
+                    "group-hover:-translate-y-0.5"
+                )}
+                onClick={() => onNavigate(activity.issueId)}
+            >
+                <CardContent className="p-4">
+                    {/* Header */}
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                            <div className={cn(
+                                "w-7 h-7 rounded-full flex-shrink-0",
+                                "bg-[hsl(var(--neutral-2))]",
+                                "flex items-center justify-center"
+                            )}>
+                                <User size={12} className="text-[hsl(var(--neutral-7))]" />
+                            </div>
+                            <div className="min-w-0">
+                                <div className="font-semibold text-sm text-[hsl(var(--neutral-11))] truncate">
+                                    {activity.actorName}
+                                </div>
+                                <div className="text-xs text-[hsl(var(--neutral-6))]">
+                                    {activity.actorRole}
+                                </div>
+                            </div>
+                        </div>
+                        <div className={cn(
+                            "flex items-center gap-1",
+                            "text-[10px] text-[hsl(var(--neutral-6))]",
+                            "flex-shrink-0"
+                        )}>
+                            <Clock size={10} />
+                            {format(new Date(activity.timestamp), "HH:mm")}
+                        </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="space-y-1.5">
+                        <div className={cn(
+                            "inline-flex items-center gap-1",
+                            "text-sm font-medium",
+                            "text-[hsl(var(--blue-7))]",
+                            "hover:text-[hsl(var(--blue-8))]"
+                        )}>
+                            {activity.issueTitle}
+                            <ArrowUpRight size={12} />
+                        </div>
+                        <p className={cn(
+                            "text-sm leading-relaxed",
+                            "text-[hsl(var(--neutral-8))]"
+                        )}>
+                            {activity.details}
+                        </p>
+                    </div>
+
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-2 mt-3">
+                        {/* Neighborhood Badge */}
+                        {activity.neighborhoodId && (
+                            <span className={cn(
+                                "inline-flex items-center gap-1",
+                                "px-2 py-0.5 rounded",
+                                "text-[10px] font-medium",
+                                "bg-[hsl(var(--purple-1))]",
+                                "text-[hsl(var(--purple-7))]"
+                            )}>
+                                <MapPin size={10} />
+                                {activity.neighborhoodId}
+                            </span>
+                        )}
+                        
+                        {/* Public Badge */}
+                        {showPublicBadge && activity.isPublic && (
+                            <span className={cn(
+                                "inline-flex items-center gap-1",
+                                "px-2 py-0.5 rounded",
+                                "text-[10px] font-medium",
+                                "bg-[hsl(var(--green-1))]",
+                                "text-[hsl(var(--green-7))]"
+                            )}>
+                                <Check size={10} />
+                                {t("public")}
+                            </span>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// MAIN COMPONENT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 export default function ActivityPage() {
     const { session } = useSession();
     const router = useRouter();
@@ -126,30 +241,21 @@ export default function ActivityPage() {
     const t = useTranslations("activity");
     const [activities, setActivities] = useState<ActivityEvent[]>([]);
 
-    useEffect(() => {
+    const loadActivities = useCallback(async () => {
         if (!session) return;
         
-        const load = async () => {
-            const stored = await activityRepository.getAll();
-            
-            // Combine stored activities with mock data
-            const combined = [...stored, ...MOCK_ACTIVITIES];
-            
-            const filtered = combined.filter(a => {
-                if (session.role === 'citizen') return a.isPublic;
-                if (session.role === 'unit') return a.unitId === session.unitId || !a.unitId;
-                if (session.role === 'muhtar') return a.neighborhoodId === session.neighborhoodId;
-                return true;
-            });
-            
-            // Sort by timestamp
-            filtered.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-            
-            setActivities(filtered);
-        };
+        // Get stored activities
+        const storedActivities = await activityRepository.getAll();
         
-        load();
+        // Get filtered notifications for this user
+        const filtered = getNotificationsForUser(session, storedActivities);
+        
+        setActivities(filtered);
     }, [session]);
+
+    useEffect(() => {
+        loadActivities();
+    }, [loadActivities]);
 
     if (!session) return null;
 
@@ -163,21 +269,49 @@ export default function ActivityPage() {
         return acc;
     }, {} as Record<string, ActivityEvent[]>);
 
+    const handleNavigate = (issueId: string) => {
+        router.push(`/issues/${issueId}`);
+    };
+
+    // Get role-specific description
+    const getRoleDescription = () => {
+        switch (session.role) {
+            case "muhtar":
+                return t("descriptionMuhtar") || `${session.neighborhoodId} Mahallesi için aktiviteler`;
+            case "unit":
+                return t("descriptionUnit") || `${session.name} birimi için aktiviteler`;
+            case "call_center":
+                return t("descriptionCallCenter") || "Tüm sistem aktiviteleri";
+            default:
+                return t("description");
+        }
+    };
+
     return (
         <Container className="max-w-3xl space-y-6 pb-16 animate-in fade-in duration-500">
             <PageHeader
                 title={t("title")}
-                description={t("description")}
+                description={getRoleDescription()}
                 actions={
-                    <div className={cn(
-                        "flex items-center gap-2",
-                        "px-3 py-1.5 rounded-lg",
-                        "bg-[hsl(var(--green-1))]",
-                        "border border-[hsl(var(--green-3))]",
-                        "text-xs font-medium text-[hsl(var(--green-7))]"
-                    )}>
-                        <span className="w-2 h-2 rounded-full bg-[hsl(var(--green-6))] animate-pulse" />
-                        {t("liveStream")}
+                    <div className="flex items-center gap-3">
+                        {/* Role Badge */}
+                        <RoleBadge 
+                            role={session.role} 
+                            neighborhoodId={session.neighborhoodId}
+                            unitName={session.name}
+                        />
+                        
+                        {/* Live indicator */}
+                        <div className={cn(
+                            "flex items-center gap-2",
+                            "px-3 py-1.5 rounded-lg",
+                            "bg-[hsl(var(--green-1))]",
+                            "border border-[hsl(var(--green-3))]",
+                            "text-xs font-medium text-[hsl(var(--green-7))]"
+                        )}>
+                            <span className="w-2 h-2 rounded-full bg-[hsl(var(--green-6))] animate-pulse" />
+                            {t("liveStream")}
+                        </div>
                     </div>
                 }
             />
@@ -207,97 +341,13 @@ export default function ActivityPage() {
                         {/* Activity Items */}
                         <div className="space-y-3">
                             {items.map((item) => (
-                                <div key={item.id} className="relative pl-11 group">
-                                    {/* Icon */}
-                                    <div className={cn(
-                                        "absolute left-0 top-3",
-                                        "w-[38px] h-[38px] rounded-xl",
-                                        "flex items-center justify-center",
-                                        "text-white shadow-sm",
-                                        "transition-transform duration-200",
-                                        "group-hover:scale-110",
-                                        getActivityColor(item.type as ActivityType)
-                                    )}>
-                                        {getActivityIcon(item.type as ActivityType)}
-                                    </div>
-
-                                    {/* Card */}
-                                    <Card
-                                        className={cn(
-                                            "cursor-pointer",
-                                            "border-[hsl(var(--neutral-4))]",
-                                            "hover:border-[hsl(var(--blue-4))]",
-                                            "hover:shadow-md",
-                                            "transition-all duration-200",
-                                            "group-hover:-translate-y-0.5"
-                                        )}
-                                        onClick={() => router.push(`/issues/${item.issueId}`)}
-                                    >
-                                        <CardContent className="p-4">
-                                            {/* Header */}
-                                            <div className="flex items-start justify-between gap-3 mb-2">
-                                                <div className="flex items-center gap-2 min-w-0">
-                                                    <div className={cn(
-                                                        "w-7 h-7 rounded-full flex-shrink-0",
-                                                        "bg-[hsl(var(--neutral-2))]",
-                                                        "flex items-center justify-center"
-                                                    )}>
-                                                        <User size={12} className="text-[hsl(var(--neutral-7))]" />
-                                                    </div>
-                                                    <div className="min-w-0">
-                                                        <div className="font-semibold text-sm text-[hsl(var(--neutral-11))] truncate">
-                                                            {item.actorName}
-                                                        </div>
-                                                        <div className="text-xs text-[hsl(var(--neutral-6))]">
-                                                            {item.actorRole}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className={cn(
-                                                    "flex items-center gap-1",
-                                                    "text-[10px] text-[hsl(var(--neutral-6))]",
-                                                    "flex-shrink-0"
-                                                )}>
-                                                    <Clock size={10} />
-                                                    {format(new Date(item.timestamp), "HH:mm")}
-                                                </div>
-                                            </div>
-
-                                            {/* Content */}
-                                            <div className="space-y-1.5">
-                                                <div className={cn(
-                                                    "inline-flex items-center gap-1",
-                                                    "text-sm font-medium",
-                                                    "text-[hsl(var(--blue-7))]",
-                                                    "hover:text-[hsl(var(--blue-8))]"
-                                                )}>
-                                                    {item.issueTitle}
-                                                    <ArrowUpRight size={12} />
-                                                </div>
-                                                <p className={cn(
-                                                    "text-sm leading-relaxed",
-                                                    "text-[hsl(var(--neutral-8))]"
-                                                )}>
-                                                    {item.details}
-                                                </p>
-                                            </div>
-
-                                            {/* Public Badge */}
-                                            {item.isPublic && (
-                                                <div className={cn(
-                                                    "inline-flex items-center gap-1 mt-3",
-                                                    "px-2 py-0.5 rounded",
-                                                    "text-[10px] font-medium",
-                                                    "bg-[hsl(var(--green-1))]",
-                                                    "text-[hsl(var(--green-7))]"
-                                                )}>
-                                                    <Check size={10} />
-                                                    {t("public")}
-                                                </div>
-                                            )}
-                                        </CardContent>
-                                    </Card>
-                                </div>
+                                <ActivityCard
+                                    key={item.id}
+                                    activity={item}
+                                    dateLocale={dateLocale}
+                                    onNavigate={handleNavigate}
+                                    showPublicBadge={session.role === "call_center"}
+                                />
                             ))}
                         </div>
                     </div>

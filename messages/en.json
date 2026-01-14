@@ -307,13 +307,20 @@
         "new": "new",
         "empty": "No notifications yet",
         "viewAll": "View All",
-        "markAllRead": "Mark All as Read"
+        "markAllRead": "Mark All as Read",
+        "allNotifications": "All Notifications"
     },
     "activity": {
         "title": "Activity Center",
         "description": "Notifications and system updates",
+        "descriptionMuhtar": "Notifications and updates for your neighborhood",
+        "descriptionUnit": "Notifications and updates for your unit",
+        "descriptionCallCenter": "All system activities",
         "liveStream": "Live Stream",
         "empty": "No activity records yet",
-        "public": "Public"
+        "public": "Public",
+        "neighborhoodScope": "Neighborhood Notifications",
+        "unitScope": "Unit Notifications",
+        "allScope": "All System"
     }
 }

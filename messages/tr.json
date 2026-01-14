@@ -308,14 +308,21 @@
         "new": "yeni",
         "empty": "Henüz bildirim yok",
         "viewAll": "Tümünü Gör",
-        "markAllRead": "Tümünü Okundu İşaretle"
+        "markAllRead": "Tümünü Okundu İşaretle",
+        "allNotifications": "Tüm Bildirimler"
     },
     "activity": {
         "title": "Aktivite Merkezi",
         "description": "Bildirimler ve sistem güncellemeleri",
+        "descriptionMuhtar": "Mahallenize ait bildirimler ve güncellemeler",
+        "descriptionUnit": "Biriminize ait bildirimler ve güncellemeler",
+        "descriptionCallCenter": "Tüm sistem aktiviteleri",
         "liveStream": "Canlı Akış",
         "empty": "Henüz aktivite kaydı bulunmuyor",
-        "public": "Herkese Açık"
+        "public": "Herkese Açık",
+        "neighborhoodScope": "Mahalle Bildirimleri",
+        "unitScope": "Birim Bildirimleri",
+        "allScope": "Tüm Sistem"
     },
     "ai": {
         "insightTitle": "Yapay Zekâ Önerisi",
