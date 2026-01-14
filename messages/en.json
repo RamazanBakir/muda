@@ -48,7 +48,7 @@
     },
     "roles": {
         "citizen": "Citizen",
-        "mukhtar": "Mukhtar",
+        "muhtar": "Muhtar",
         "unit": "Unit",
         "call_center": "Call Center"
     },
@@ -128,7 +128,7 @@
     "issues": {
         "title": "Issues",
         "descCitizen": "A list of all notifications you created in Muğla.",
-        "descMukhtar": "Citizen notifications in your neighborhood.",
+        "descMuhtar": "Citizen notifications in your neighborhood.",
         "descUnit": "A list of work forwarded to our unit.",
         "descAdmin": "All records in the system.",
         "searchLabel": "Search",
@@ -182,6 +182,22 @@
             "addressDescription": "Full Address"
         },
         "submit": "Complete Notification",
+        "media": {
+            "title": "Photos & Videos",
+            "hint": "Add visuals to help us understand the issue better (optional)",
+            "addPhoto": "Add Photo",
+            "addVideo": "Add Video",
+            "takePhoto": "Take Photo",
+            "takeVideo": "Take Video",
+            "fromGallery": "Choose from Gallery",
+            "maxFiles": "You can add up to {count} files",
+            "maxSize": "Each file can be up to {size} MB",
+            "removeFile": "Remove",
+            "uploading": "Uploading...",
+            "photosCount": "{count} photos",
+            "videosCount": "{count} videos",
+            "tapToPreview": "Tap to preview"
+        },
         "errors": {
             "category": "Please select a category",
             "title": "Please enter a title",
@@ -202,7 +218,7 @@
         },
         "listCard": {
             "titleCitizen": "My Notifications",
-            "titleMukhtar": "Neighborhood Notifications",
+            "titleMuhtar": "Neighborhood Notifications",
             "titleUnit": "Unit Inbox",
             "titleCallCenter": "All Notifications",
             "desc": "Track the status of notifications and view details.",
@@ -260,19 +276,17 @@
         "loginTitle": "Login",
         "errorAuth": "Invalid login credentials. Please check again.",
         "loggingIn": "Logging In...",
-        "mukhtarDesc": "Login panel for neighborhood mukhtars.",
-        "unitDesc": "Login panel for municipal unit officials.",
-        "callCenterDesc": "Login panel for call center operators.",
-        "usernameLabel": "Username",
-        "unitCodeLabel": "Unit Code",
-        "operatorIdLabel": "Operator ID",
+        "unifiedLoginDesc": "Enter your credentials to access the system.",
+        "identifierLabel": "Username / Unit Code",
+        "identifierHint": "Enter muhtar username, unit code or operator ID",
         "passwordLabel": "Password",
         "demoHint": "Password for demo: {password}",
+        "demoCredentialsTitle": "Demo Credentials",
         "submit": "Login"
     },
     "roles": {
         "citizen": "Citizen",
-        "mukhtar": "Mukhtar",
+        "muhtar": "Muhtar",
         "unit": "Unit Official",
         "call_center": "Call Center"
     },
@@ -287,5 +301,19 @@
         "privacy": "Privacy",
         "terms": "Terms of Use",
         "contact": "Contact"
+    },
+    "notifications": {
+        "title": "Notifications",
+        "new": "new",
+        "empty": "No notifications yet",
+        "viewAll": "View All",
+        "markAllRead": "Mark All as Read"
+    },
+    "activity": {
+        "title": "Activity Center",
+        "description": "Notifications and system updates",
+        "liveStream": "Live Stream",
+        "empty": "No activity records yet",
+        "public": "Public"
     }
 }

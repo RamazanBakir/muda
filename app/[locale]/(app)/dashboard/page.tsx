@@ -23,7 +23,7 @@ export default function DashboardPage() {
     const getListCardTitle = () => {
         switch (role) {
             case 'citizen': return t('listCard.titleCitizen');
-            case 'mukhtar': return t('listCard.titleMukhtar');
+            case 'muhtar': return t('listCard.titleMuhtar');
             case 'unit': return t('listCard.titleUnit');
             default: return t('listCard.titleCallCenter');
         }

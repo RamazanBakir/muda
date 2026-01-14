@@ -6,7 +6,7 @@ export type IssueStatus = "created" | "triaged" | "in_progress" | "resolved";
 
 export interface IssueReporter {
     id: string;
-    type: "citizen" | "mukhtar" | "unit" | "call_center";
+    type: "citizen" | "muhtar" | "unit" | "call_center";
     name: string;
     contactPhone?: string;
 }

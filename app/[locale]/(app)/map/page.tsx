@@ -39,7 +39,7 @@ export default function MapPage() {
             const all = await issueRepository.getIssues({
                 role: session?.role || 'citizen',
                 unitId: session?.role === 'unit' ? session.unitId : undefined,
-                neighborhoodId: session?.role === 'mukhtar' ? session.neighborhoodId : undefined
+                neighborhoodId: session?.role === 'muhtar' ? session.neighborhoodId : undefined
             });
             setIssues(all);
         };

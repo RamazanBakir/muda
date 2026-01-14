@@ -30,7 +30,7 @@ export const STRINGS = {
     },
     roles: {
         citizen: "Vatandaş",
-        mukhtar: "Muhtar",
+        muhtar: "Muhtar",
         unit: "Birim",
         call_center: "Çağrı Merkezi",
     },

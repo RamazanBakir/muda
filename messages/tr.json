@@ -48,7 +48,7 @@
     },
     "roles": {
         "citizen": "Vatandaş",
-        "mukhtar": "Muhtar",
+        "muhtar": "Muhtar",
         "unit": "Birim",
         "call_center": "Çağrı Merkezi"
     },
@@ -128,7 +128,7 @@
     "issues": {
         "title": "Talepler",
         "descCitizen": "Muğla genelinde oluşturduğunuz tüm bildirimlerin listesi.",
-        "descMukhtar": "Mahallenizdeki vatandaş bildirimleri.",
+        "descMuhtar": "Mahallenizdeki vatandaş bildirimleri.",
         "descUnit": "Birimize iletilen işlerin listesi.",
         "descAdmin": "Sistemdeki tüm kayıtlar.",
         "searchLabel": "Arama",
@@ -183,6 +183,22 @@
             "addressDescription": "Açık Adres"
         },
         "submit": "Bildirimi Tamamla",
+        "media": {
+            "title": "Fotoğraf & Video",
+            "hint": "Sorunu daha iyi anlamamız için görsel ekleyin (isteğe bağlı)",
+            "addPhoto": "Fotoğraf Ekle",
+            "addVideo": "Video Ekle",
+            "takePhoto": "Fotoğraf Çek",
+            "takeVideo": "Video Çek",
+            "fromGallery": "Galeriden Seç",
+            "maxFiles": "En fazla {count} dosya ekleyebilirsiniz",
+            "maxSize": "Her dosya en fazla {size} MB olabilir",
+            "removeFile": "Kaldır",
+            "uploading": "Yükleniyor...",
+            "photosCount": "{count} fotoğraf",
+            "videosCount": "{count} video",
+            "tapToPreview": "Önizleme için dokunun"
+        },
         "errors": {
             "category": "Kategori seçiniz",
             "title": "Başlık giriniz",
@@ -203,7 +219,7 @@
         },
         "listCard": {
             "titleCitizen": "Bildirimlerim",
-            "titleMukhtar": "Mahalle Bildirimleri",
+            "titleMuhtar": "Mahalle Bildirimleri",
             "titleUnit": "Birim Gelen Kutusu",
             "titleCallCenter": "Tüm Bildirimler",
             "desc": "Bildirimlerin durumunu takip edin ve detayları görüntüleyin.",
@@ -261,19 +277,17 @@
         "loginTitle": "Giriş Yap",
         "errorAuth": "Hatalı giriş bilgileri. Lütfen kontrol ediniz.",
         "loggingIn": "Giriş Yapılıyor...",
-        "mukhtarDesc": "Mahalle muhtarları için giriş paneli.",
-        "unitDesc": "Belediye birim yetkilileri için giriş paneli.",
-        "callCenterDesc": "Çağrı merkezi operatörleri için giriş paneli.",
-        "usernameLabel": "Kullanıcı Adı",
-        "unitCodeLabel": "Birim Kodu",
-        "operatorIdLabel": "Operatör ID",
+        "unifiedLoginDesc": "Kullanıcı bilgilerinizi girerek sisteme giriş yapın.",
+        "identifierLabel": "Kullanıcı Adı / Birim Kodu",
+        "identifierHint": "Muhtar adı, birim kodu veya operatör ID giriniz",
         "passwordLabel": "Şifre",
         "demoHint": "Demo için şifre: {password}",
+        "demoCredentialsTitle": "Demo Giriş Bilgileri",
         "submit": "Giriş Yap"
     },
     "roles": {
         "citizen": "Vatandaş",
-        "mukhtar": "Muhtar",
+        "muhtar": "Muhtar",
         "unit": "Birim Yetkilisi",
         "call_center": "Çağrı Merkezi"
     },
@@ -288,6 +302,20 @@
         "privacy": "Gizlilik",
         "terms": "Kullanım Şartları",
         "contact": "İletişim"
+    },
+    "notifications": {
+        "title": "Bildirimler",
+        "new": "yeni",
+        "empty": "Henüz bildirim yok",
+        "viewAll": "Tümünü Gör",
+        "markAllRead": "Tümünü Okundu İşaretle"
+    },
+    "activity": {
+        "title": "Aktivite Merkezi",
+        "description": "Bildirimler ve sistem güncellemeleri",
+        "liveStream": "Canlı Akış",
+        "empty": "Henüz aktivite kaydı bulunmuyor",
+        "public": "Herkese Açık"
     },
     "ai": {
         "insightTitle": "Yapay Zekâ Önerisi",

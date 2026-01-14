@@ -6,12 +6,12 @@ export interface ActivityEvent {
     issueId: string;
     issueTitle: string;
     actorName: string;
-    actorRole: string; // "unit", "mukhtar", "citizen"
+    actorRole: string; // "unit", "muhtar", "citizen"
     details: string; // e.g., "Status changed to In Progress"
     timestamp: string; // ISO
 
     // Scoping
     unitId?: string;       // Visibile to this unit
-    neighborhoodId?: string; // Visible to this mukhtar
+    neighborhoodId?: string; // Visible to this muhtar
     isPublic: boolean;     // Visible to citizen?
 }

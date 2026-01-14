@@ -85,7 +85,7 @@ const MOCK_ISSUES: Issue[] = [
         status: "in_progress",
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
         updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-        reporter: { type: "mukhtar", id: "mukhtar-1", name: "Mehmet Demir" },
+        reporter: { type: "muhtar", id: "muhtar-1", name: "Mehmet Demir" },
         assignedUnit: { id: "unit-light", name: "Aydınlatma Şefliği" },
         assignedTo: { type: "team", id: "team-park-a", name: "Park Bahçeler Ekibi" },
         dueAt: new Date(Date.now() + 1000 * 60 * 60 * 4).toISOString(), // 4h remaining
@@ -159,7 +159,7 @@ const MOCK_ISSUES: Issue[] = [
         status: "triaged",
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
         updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
-        reporter: { type: "mukhtar", id: "mukhtar-2", name: "Zeynep Aydın" },
+        reporter: { type: "muhtar", id: "muhtar-2", name: "Zeynep Aydın" },
         assignedUnit: { id: "unit-parks", name: "Park ve Bahçeler" },
         media: { photos: ["https://images.unsplash.com/photo-1568393691622-c7ba131d63b4?w=800&q=80"] },
         timeline: [
@@ -222,8 +222,8 @@ export const issueRepository = {
         // 1. Role Scoping
         if (filters.role === "citizen" && filters.userId) {
             issues = issues.filter(i => i.reporter.id === filters.userId);
-        } else if (filters.role === "mukhtar" && filters.neighborhoodId) {
-            issues = issues.filter(i => i.location.neighborhood?.toLowerCase() === filters.neighborhoodId?.toLowerCase() || i.reporter.type === "mukhtar");
+        } else if (filters.role === "muhtar" && filters.neighborhoodId) {
+            issues = issues.filter(i => i.location.neighborhood?.toLowerCase() === filters.neighborhoodId?.toLowerCase() || i.reporter.type === "muhtar");
         } else if (filters.role === "unit" && filters.unitId) {
             // Unit sees issues assigned to their unit
             issues = issues.filter(i => i.assignedUnit?.id === filters.unitId);

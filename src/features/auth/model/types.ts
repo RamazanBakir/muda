@@ -1,13 +1,13 @@
-export type UserRole = "citizen" | "mukhtar" | "unit" | "call_center";
+export type UserRole = "citizen" | "muhtar" | "unit" | "call_center";
 
 export interface UserSession {
     role: UserRole;
     userId: string;
     name: string;
     // Role specific fields
-    neighborhoodId?: string; // for Mukhtar
+    neighborhoodId?: string; // for Muhtar
     unitId?: string;        // for Unit
-    district?: string;      // for Mukhtar/Citizen
+    district?: string;      // for Muhtar/Citizen
 }
 
 export interface LoginCredentials {
@@ -19,7 +19,7 @@ export interface LoginCredentials {
 
 export const USER_ROLES: { label: string; value: UserRole }[] = [
     { label: "Vatandaş", value: "citizen" },
-    { label: "Muhtar", value: "mukhtar" },
+    { label: "Muhtar", value: "muhtar" },
     { label: "Birim Yetkilisi", value: "unit" },
     { label: "Çağrı Merkezi", value: "call_center" },
 ];

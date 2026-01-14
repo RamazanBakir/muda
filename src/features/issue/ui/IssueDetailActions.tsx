@@ -71,7 +71,7 @@ export function IssueDetailActions({ issue, role, onUpdate }: IssueDetailActions
         }
     };
 
-    if (role === 'citizen' || role === 'mukhtar') {
+    if (role === 'citizen' || role === 'muhtar') {
         return null;
     }
 

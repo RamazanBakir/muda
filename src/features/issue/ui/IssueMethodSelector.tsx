@@ -15,6 +15,7 @@ import { storage } from "@/shared/lib/storage";
 import { useTranslations } from "next-intl";
 import { MapPin, Map as MapIcon, Home, CheckCircle2, ChevronRight, ArrowLeft, Sparkles, ChevronDown } from "lucide-react";
 import { generateAIDecision } from "@/features/ai";
+import { MediaUploader, type MediaFile } from "./MediaUploader";
 
 // Lazy load Map to avoid SSR issues
 const MapView = dynamic(() => import("@/features/map/ui/MapView").then(m => m.MapView), {
@@ -54,15 +55,21 @@ export function IssueMethodSelector() {
         contactPhone: ""
     });
 
+    // Media Files (photos and videos)
+    const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
+
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [showAIHint, setShowAIHint] = useState(false);
     
     // Generate AI preview when description changes
+    const photoCount = mediaFiles.filter(f => f.type === "photo").length;
     const aiPreview = formData.desc.length > 20 
         ? generateAIDecision({
             description: formData.desc,
             category: formData.category as any || undefined,
             location: location ? { lat: location.lat, lng: location.lng } : undefined,
+            hasPhoto: photoCount > 0,
+            photoCount,
         })
         : null;
 
@@ -293,6 +300,21 @@ export function IssueMethodSelector() {
                         />
                     </FormField>
 
+                    {/* Media Upload Section */}
+                    <div className={cn(
+                        "p-4 rounded-[var(--radius-md)]",
+                        "bg-[hsl(var(--neutral-2))] border border-[hsl(var(--neutral-3))]"
+                    )}>
+                        <MediaUploader
+                            value={mediaFiles}
+                            onChange={setMediaFiles}
+                            maxPhotos={5}
+                            maxVideos={2}
+                            maxFileSizeMB={10}
+                            disabled={loading}
+                        />
+                    </div>
+
                     {/* Citizen-friendly AI Hint */}
                     {aiPreview && (
                         <div className={cn(
@@ -334,7 +356,7 @@ export function IssueMethodSelector() {
                                     </div>
                                     {aiPreview.overallConfidence < 0.6 && (
                                         <p className="text-[hsl(var(--amber-7))]">
-                                            💡 Daha iyi yönlendirme için detaylı bir açıklama ekleyebilirsiniz.
+                                            💡 Daha iyi yönlendirme için detaylı bir açıklama veya fotoğraf ekleyebilirsiniz.
                                         </p>
                                     )}
                                 </div>

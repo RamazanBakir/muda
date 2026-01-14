@@ -71,7 +71,7 @@ export default function IssuesPage() {
     const getPageDescription = () => {
         switch (session.role) {
             case 'citizen': return ti('descCitizen');
-            case 'mukhtar': return ti('descMukhtar');
+            case 'muhtar': return ti('descMuhtar');
             case 'unit': return ti('descUnit');
             default: return ti('descAdmin');
         }

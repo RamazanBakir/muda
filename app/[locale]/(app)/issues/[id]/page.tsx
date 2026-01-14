@@ -245,8 +245,8 @@ export default function IssueDetailPage() {
                         />
                     )}
 
-                    {/* Simplified AI info for mukhtar */}
-                    {issue.ai && session.role === "mukhtar" && (
+                    {/* Simplified AI info for muhtar */}
+                    {issue.ai && session.role === "muhtar" && (
                         <div className={cn(
                             "p-4 rounded-lg",
                             "bg-gradient-to-br from-[hsl(var(--blue-1))] to-[hsl(var(--surface))]",

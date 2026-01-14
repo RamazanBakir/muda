@@ -1,8 +1,8 @@
 
 export const AUTH_CONFIG = {
-    MUKHTAR_USERS: [
-        { username: 'mukhtar_mentese', password: '123', name: 'Ahmet Yılmaz', district: 'Menteşe', neighborhood: 'Orhaniye', role: 'mukhtar' as const },
-        { username: 'mukhtar_kobekli', password: '123', name: 'Ayşe Demir', district: 'Menteşe', neighborhood: 'Kötekli', role: 'mukhtar' as const },
+    MUHTAR_USERS: [
+        { username: 'muhtar_mentese', password: '123', name: 'Ahmet Yılmaz', district: 'Menteşe', neighborhood: 'Orhaniye', role: 'muhtar' as const },
+        { username: 'muhtar_kobekli', password: '123', name: 'Ayşe Demir', district: 'Menteşe', neighborhood: 'Kötekli', role: 'muhtar' as const },
     ],
     UNIT_USERS: [
         { code: 'UNIT-001', password: '123', name: 'Su ve Kanalizasyon', unitId: 'unit-water', role: 'unit' as const },
