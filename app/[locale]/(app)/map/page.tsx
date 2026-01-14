@@ -1,15 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { MapView } from "@/features/map/ui/MapView";
 import { useSession } from "@/features/auth";
 import { issueRepository, Issue } from "@/features/issue";
 import { Button } from "@/shared/ui/button";
 import { HeatmapLayer } from "@/features/map/ui/overlays/HeatmapLayer";
 import { PolygonDrawer } from "@/features/map/ui/overlays/PolygonDrawer";
-import { Polygon } from "react-leaflet";
+import { Polygon, Marker, Popup } from "react-leaflet";
 import { STRINGS } from "@/shared/config/strings";
 import { cn } from "@/shared/lib/cn";
+import { useRouter } from "@/navigation";
+import {
+    generateMockMapData,
+    MapIssuePoint,
+    getCategoryColor,
+    getPriorityColor,
+    MUGLA_DISTRICTS
+} from "@/features/map/lib/mockMapData";
+import { createCategoryIcon, markerStyles } from "@/features/map/ui/CategoryMarker";
+import { MapLegend, MapStats } from "@/features/map/ui/MapLegend";
+import { IssueCategory, IssuePriority } from "@/features/issue/model/types";
 import {
     Zap,
     Map as MapIcon,
@@ -18,21 +29,41 @@ import {
     X,
     ChevronRight,
     BarChart2,
-    Save
+    Save,
+    Filter,
+    Eye,
+    EyeOff,
+    Info
 } from "lucide-react";
 
 export default function MapPage() {
     const { session } = useSession();
+    const router = useRouter();
     const [issues, setIssues] = useState<Issue[]>([]);
     const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+    const [selectedMapPoint, setSelectedMapPoint] = useState<MapIssuePoint | null>(null);
     const [sheetOpen, setSheetOpen] = useState(false);
     const [overlayType, setOverlayType] = useState<"markers" | "heatmap" | "hotspots">("markers");
+    const [showLegend, setShowLegend] = useState(true);
 
     // Analysis & Drawing States
     const [analysisMode, setAnalysisMode] = useState(false);
     const [isDrawing, setIsDrawing] = useState(false);
     const [savedAreas, setSavedAreas] = useState<Array<{ id: string, name: string, points: [number, number][], stats: any }>>([]);
     const [analyzingArea, setAnalyzingArea] = useState<{ points: [number, number][], stats: any } | null>(null);
+
+    // Mock map data for visualization
+    const mockMapData = useMemo(() => generateMockMapData(60), []);
+
+    // Inject custom marker styles
+    useEffect(() => {
+        const styleEl = document.createElement('style');
+        styleEl.innerHTML = markerStyles;
+        document.head.appendChild(styleEl);
+        return () => {
+            document.head.removeChild(styleEl);
+        };
+    }, []);
 
     useEffect(() => {
         const load = async () => {
@@ -65,20 +96,67 @@ export default function MapPage() {
         setAnalyzingArea(null);
     };
 
-    const mapMarkers = issues
-        .filter(i => i.location.lat && i.location.lng)
-        .map(i => ({
-            id: i.id,
-            lat: i.location.lat!,
-            lng: i.location.lng!,
-            title: i.title,
-            status: i.status,
-            onClick: () => {
-                if (isDrawing) return;
-                setSelectedIssue(i);
-                setSheetOpen(true);
-            }
-        }));
+    // Combine real issues with mock data for markers
+    const allMapPoints = useMemo(() => {
+        // Convert real issues to map points
+        const realPoints: MapIssuePoint[] = issues
+            .filter(i => i.location.lat && i.location.lng)
+            .map(i => ({
+                id: i.id,
+                lat: i.location.lat!,
+                lng: i.location.lng!,
+                title: i.title,
+                category: i.category,
+                priority: i.priority,
+                status: i.status,
+                district: i.location.district || "Menteşe",
+                createdAt: i.createdAt
+            }));
+        
+        // Combine with mock data
+        return [...realPoints, ...mockMapData];
+    }, [issues, mockMapData]);
+
+    // Calculate statistics
+    const stats = useMemo(() => {
+        const byCategory: Record<IssueCategory, number> = {
+            transportation: 0,
+            water_sewer: 0,
+            parks: 0,
+            waste: 0
+        };
+        const byPriority: Record<IssuePriority, number> = {
+            high: 0,
+            medium: 0,
+            low: 0
+        };
+
+        allMapPoints.forEach(p => {
+            byCategory[p.category]++;
+            byPriority[p.priority]++;
+        });
+
+        return {
+            total: allMapPoints.length,
+            byCategory,
+            byPriority
+        };
+    }, [allMapPoints]);
+
+    const handleMarkerClick = (point: MapIssuePoint) => {
+        if (isDrawing) return;
+        
+        // Check if it's a real issue
+        const realIssue = issues.find(i => i.id === point.id);
+        if (realIssue) {
+            setSelectedIssue(realIssue);
+            setSelectedMapPoint(null);
+        } else {
+            setSelectedMapPoint(point);
+            setSelectedIssue(null);
+        }
+        setSheetOpen(true);
+    };
 
     return (
         <div className="relative w-full h-[calc(100vh-56px)] md:h-[calc(100vh-80px)] overflow-hidden flex flex-col">
@@ -128,19 +206,52 @@ export default function MapPage() {
                     )}
                 </div>
 
-                {overlayType !== 'markers' && !analysisMode && (
-                    <div className={cn(
-                        "bg-[hsl(var(--surface)/0.95)] backdrop-blur-sm p-1 rounded-[var(--radius-md)]",
-                        "border border-[hsl(var(--neutral-4))]",
-                        "shadow-[var(--shadow-md)]",
-                        "pointer-events-auto flex items-center gap-1"
-                    )}>
-                        <span className="text-xs font-medium text-[hsl(var(--neutral-7))] ml-2 mr-1">Zaman</span>
-                        <Button size="sm" className="h-7 px-2 text-xs">Son 30 Gün</Button>
-                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs">Son 7 Gün</Button>
-                    </div>
-                )}
+                {/* Right side controls */}
+                <div className="flex items-center gap-2 pointer-events-auto">
+                    {overlayType !== 'markers' && !analysisMode && (
+                        <div className={cn(
+                            "bg-[hsl(var(--surface)/0.95)] backdrop-blur-sm p-1 rounded-[var(--radius-md)]",
+                            "border border-[hsl(var(--neutral-4))]",
+                            "shadow-[var(--shadow-md)]",
+                            "flex items-center gap-1"
+                        )}>
+                            <span className="text-xs font-medium text-[hsl(var(--neutral-7))] ml-2 mr-1">Zaman</span>
+                            <Button size="sm" className="h-7 px-2 text-xs">Son 30 Gün</Button>
+                            <Button size="sm" variant="ghost" className="h-7 px-2 text-xs">Son 7 Gün</Button>
+                        </div>
+                    )}
+                    
+                    {/* Legend toggle */}
+                    {!analysisMode && (
+                        <Button
+                            size="sm"
+                            variant={showLegend ? "primary" : "ghost"}
+                            onClick={() => setShowLegend(!showLegend)}
+                            className={cn(
+                                "h-8 w-8 p-0",
+                                "bg-[hsl(var(--surface)/0.95)] backdrop-blur-sm",
+                                "border border-[hsl(var(--neutral-4))]",
+                                "shadow-[var(--shadow-md)]",
+                                showLegend && "bg-[hsl(var(--blue-6))] border-transparent"
+                            )}
+                        >
+                            {showLegend ? <Eye size={14} /> : <EyeOff size={14} />}
+                        </Button>
+                    )}
+                </div>
             </div>
+
+            {/* Legend Panel */}
+            {showLegend && !analysisMode && overlayType === 'markers' && (
+                <div className="absolute top-16 right-4 z-[400]">
+                    <MapStats 
+                        total={stats.total}
+                        byCategory={stats.byCategory}
+                        byPriority={stats.byPriority}
+                        className="w-52"
+                    />
+                </div>
+            )}
 
             {/* ANALYSIS SIDEBAR PANEL */}
             {analysisMode && (
@@ -235,15 +346,83 @@ export default function MapPage() {
 
             <MapView
                 className="flex-1"
-                markers={overlayType === 'markers' && !analysisMode ? mapMarkers : []}
+                markers={[]}
             >
+                {/* Custom Category Markers */}
+                {overlayType === 'markers' && !analysisMode && allMapPoints.map((point) => (
+                    <Marker
+                        key={point.id}
+                        position={[point.lat, point.lng]}
+                        icon={createCategoryIcon(point.category, point.priority, point.status)}
+                        eventHandlers={{
+                            click: () => handleMarkerClick(point)
+                        }}
+                    >
+                        <Popup>
+                            <div className="min-w-[180px] p-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span
+                                        className="w-3 h-3 rounded-full"
+                                        style={{ backgroundColor: getCategoryColor(point.category) }}
+                                    />
+                                    <span className="text-xs font-medium text-[hsl(var(--neutral-7))]">
+                                        {point.district}
+                                    </span>
+                                </div>
+                                <h3 className="font-semibold text-sm mb-1">{point.title}</h3>
+                                <div className="flex items-center gap-2">
+                                    <span
+                                        className="px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
+                                        style={{ backgroundColor: getPriorityColor(point.priority) }}
+                                    >
+                                        {point.priority === 'high' ? 'Acil' : point.priority === 'medium' ? 'Normal' : 'Düşük'}
+                                    </span>
+                                    <span className="text-[10px] text-[hsl(var(--neutral-6))]">
+                                        {point.id}
+                                    </span>
+                                </div>
+                            </div>
+                        </Popup>
+                    </Marker>
+                ))}
+
+                {/* Heatmap/Hotspot layers use combined data */}
                 {overlayType !== 'markers' && !analysisMode && (
-                    <HeatmapLayer issues={issues} type={overlayType} />
+                    <HeatmapLayer 
+                        issues={allMapPoints.map(p => ({
+                            id: p.id,
+                            title: p.title,
+                            description: "",
+                            location: { lat: p.lat, lng: p.lng, district: p.district },
+                            category: p.category,
+                            priority: p.priority,
+                            status: p.status,
+                            createdAt: p.createdAt,
+                            updatedAt: p.createdAt,
+                            reporter: { type: "citizen", id: "mock", name: "Mock" },
+                            media: { photos: [] },
+                            timeline: []
+                        } as Issue))} 
+                        type={overlayType} 
+                    />
                 )}
 
                 <PolygonDrawer
                     drawing={isDrawing}
-                    issues={issues}
+                    issues={allMapPoints.map(p => ({
+                        id: p.id,
+                        title: p.title,
+                        description: "",
+                        location: { lat: p.lat, lng: p.lng, district: p.district },
+                        category: p.category,
+                        priority: p.priority,
+                        status: p.status,
+                        createdAt: p.createdAt,
+                        updatedAt: p.createdAt,
+                        reporter: { type: "citizen", id: "mock", name: "Mock" },
+                        media: { photos: [] },
+                        timeline: []
+                    } as Issue))}
                     onComplete={handleAnalysisComplete}
                     onCancel={() => setIsDrawing(false)}
                 />
@@ -262,8 +441,15 @@ export default function MapPage() {
                 )}
             </MapView>
 
-            {/* Selected Issue Preview */}
-            {selectedIssue && sheetOpen && (
+            {/* Bottom Legend (Mobile) */}
+            {showLegend && !analysisMode && overlayType === 'markers' && (
+                <div className="absolute bottom-4 left-4 z-[400] md:hidden">
+                    <MapLegend compact showPriorities={false} />
+                </div>
+            )}
+
+            {/* Selected Issue/Point Preview */}
+            {(selectedIssue || selectedMapPoint) && sheetOpen && (
                 <div className="absolute bottom-4 left-4 right-4 z-[500] pointer-events-none flex justify-center md:justify-start">
                     <div className={cn(
                         "w-full max-w-sm pointer-events-auto overflow-hidden",
@@ -273,7 +459,7 @@ export default function MapPage() {
                     )}>
                         <div className="p-4 relative">
                             <button
-                                onClick={() => setSheetOpen(false)}
+                                onClick={() => { setSheetOpen(false); setSelectedIssue(null); setSelectedMapPoint(null); }}
                                 className={cn(
                                     "absolute right-3 top-3 h-7 w-7 rounded-full",
                                     "flex items-center justify-center",
@@ -286,30 +472,65 @@ export default function MapPage() {
                             </button>
 
                             <div className="space-y-3 pr-8">
-                                <div className={cn(
-                                    "inline-flex items-center px-2 py-0.5 rounded-full",
-                                    "text-xs font-medium",
-                                    "bg-[hsl(var(--blue-1))] text-[hsl(var(--blue-9))]"
-                                )}>
-                                    {STRINGS.status[selectedIssue.status]}
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold text-base text-[hsl(var(--neutral-11))] leading-tight">
-                                        {selectedIssue.title}
-                                    </h3>
-                                    <p className="text-sm text-[hsl(var(--neutral-7))] mt-1 line-clamp-2">
-                                        {selectedIssue.description}
-                                    </p>
+                                {/* Category & Priority badges */}
+                                <div className="flex items-center gap-2">
+                                    <span 
+                                        className="px-2 py-0.5 rounded-full text-xs font-medium text-white"
+                                        style={{ 
+                                            backgroundColor: getCategoryColor(
+                                                selectedIssue?.category || selectedMapPoint?.category || 'transportation'
+                                            ) 
+                                        }}
+                                    >
+                                        {STRINGS.category[selectedIssue?.category || selectedMapPoint?.category || 'transportation']}
+                                    </span>
+                                    <span
+                                        className="px-2 py-0.5 rounded-full text-xs font-medium text-white"
+                                        style={{
+                                            backgroundColor: getPriorityColor(
+                                                selectedIssue?.priority || selectedMapPoint?.priority || 'medium'
+                                            )
+                                        }}
+                                    >
+                                        {selectedIssue?.priority === 'high' || selectedMapPoint?.priority === 'high' ? 'Acil' : 
+                                         selectedIssue?.priority === 'low' || selectedMapPoint?.priority === 'low' ? 'Düşük' : 'Normal'}
+                                    </span>
                                 </div>
 
+                                {/* Title & Description */}
+                                <div>
+                                    <h3 className="font-semibold text-base text-[hsl(var(--neutral-11))] leading-tight">
+                                        {selectedIssue?.title || selectedMapPoint?.title}
+                                    </h3>
+                                    {selectedIssue?.description && (
+                                        <p className="text-sm text-[hsl(var(--neutral-7))] mt-1 line-clamp-2">
+                                            {selectedIssue.description}
+                                        </p>
+                                    )}
+                                    {selectedMapPoint && !selectedIssue && (
+                                        <p className="text-sm text-[hsl(var(--neutral-7))] mt-1">
+                                            📍 {selectedMapPoint.district}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Actions */}
                                 <div className="flex gap-2 pt-2">
-                                    <Button size="sm" className="flex-1" onClick={() => window.location.href = `/issues/${selectedIssue.id}`}>
-                                        Detay
-                                        <ChevronRight size={14} className="ml-1" />
-                                    </Button>
-                                    <Button size="sm" variant="outline" className="w-8 h-8 p-0" onClick={() => setSheetOpen(false)}>
-                                        <X size={14} />
-                                    </Button>
+                                    {selectedIssue ? (
+                                        <Button 
+                                            size="sm" 
+                                            className="flex-1" 
+                                            onClick={() => router.push(`/issues/${selectedIssue.id}`)}
+                                        >
+                                            Detay
+                                            <ChevronRight size={14} className="ml-1" />
+                                        </Button>
+                                    ) : (
+                                        <div className="flex items-center gap-2 text-xs text-[hsl(var(--neutral-6))]">
+                                            <Info size={12} />
+                                            Demo verisi - Gerçek kayıt değil
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

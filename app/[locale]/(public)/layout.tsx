@@ -6,6 +6,7 @@ import { Button } from "@/shared/ui/button";
 import { RoleSwitcher } from "@/features/auth";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/navigation";
+import { MudaLogo, MudaLogoMark, MudaLogoFull } from "@/shared/ui/logo";
 
 export default function PublicLayout({
     children,
@@ -19,20 +20,22 @@ export default function PublicLayout({
             {/* Header - Clean, professional */}
             <header className="sticky top-0 z-50 w-full border-b border-[hsl(var(--neutral-3))] bg-[hsl(var(--surface)/0.95)] backdrop-blur-sm">
                 <Container className="flex h-14 items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-                        {/* Logo Mark - Blue */}
-                        <div className="h-8 w-8 bg-[hsl(var(--blue-6))] rounded-lg flex items-center justify-center text-white font-semibold text-sm">
-                            M
+                    {/* Logo - Responsive */}
+                    <div className="flex items-center">
+                        {/* Mobile: Compact logo */}
+                        <div className="sm:hidden">
+                            <MudaLogoMark href="/" size="md" />
                         </div>
-                        <div className="flex flex-col leading-none">
-                            <span className="text-base font-semibold text-[hsl(var(--neutral-11))]">
-                                MUDA
-                            </span>
-                            <span className="text-[10px] font-medium text-[hsl(var(--neutral-6))] hidden sm:inline-block">
-                                {t('subTitle')}
-                            </span>
+                        {/* Desktop: Full logo with subtitle */}
+                        <div className="hidden sm:block">
+                            <MudaLogoFull 
+                                href="/" 
+                                size="md" 
+                                showSubtitle 
+                                subtitle={t('subTitle')} 
+                            />
                         </div>
-                    </Link>
+                    </div>
 
                     <nav className="flex items-center gap-2">
                         <LanguageSwitcher />
@@ -58,9 +61,7 @@ export default function PublicLayout({
             <footer className="border-t border-[hsl(var(--neutral-3))] bg-[hsl(var(--neutral-2))] py-8">
                 <Container className="flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-2">
-                        <div className="h-5 w-5 bg-[hsl(var(--neutral-4))] rounded flex items-center justify-center text-[10px] font-semibold text-[hsl(var(--neutral-7))]">
-                            M
-                        </div>
+                        <MudaLogoMark size="sm" />
                         <span className="text-sm text-[hsl(var(--neutral-7))]">{t('copyright')}</span>
                     </div>
 

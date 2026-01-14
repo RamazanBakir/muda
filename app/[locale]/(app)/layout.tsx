@@ -17,11 +17,10 @@ import {
     ClipboardList,
     BarChart3,
     Inbox,
-    Home,
     Sparkles,
-    ListFilter,
     Cpu
 } from "lucide-react";
+import { MudaLogo, MudaLogoMark } from "@/shared/ui/logo";
 
 const DevToolsWrapper = dynamic(
     () => import('@/shared/ui/dev-tools/wrapper').then(mod => mod.DevToolsWrapper),
@@ -77,15 +76,17 @@ export default function AppLayout({
                 )}>
                     <Container className="flex h-14 items-center justify-between">
                         <div className="flex items-center gap-6 lg:gap-8">
-                            {/* Logo */}
-                            <Link href="/dashboard" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-                                <div className="bg-[hsl(var(--blue-6))] text-white p-1.5 rounded-lg">
-                                    <Home size={16} strokeWidth={2} />
+                            {/* Logo - Responsive */}
+                            <div className="flex items-center">
+                                {/* Mobile: Just the mark */}
+                                <div className="sm:hidden">
+                                    <MudaLogoMark href="/dashboard" size="md" />
                                 </div>
-                                <span className="font-semibold text-base text-[hsl(var(--neutral-11))] hidden sm:block">
-                                    MUDA
-                                </span>
-                            </Link>
+                                {/* Desktop: Full colorful logo */}
+                                <div className="hidden sm:block">
+                                    <MudaLogo href="/dashboard" size="md" />
+                                </div>
+                            </div>
 
                             {/* Desktop Navigation */}
                             <nav className="hidden md:flex items-center gap-1">

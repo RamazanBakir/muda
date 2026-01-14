@@ -122,6 +122,21 @@
   --red-11: 0 85% 20%;
   --red-12: 0 88% 15%;
 
+  /* Purple Scale — Modern accent color */
+  --purple-0: 270 100% 98%;
+  --purple-1: 269 95% 95%;
+  --purple-2: 268 90% 90%;
+  --purple-3: 267 85% 84%;
+  --purple-4: 266 78% 74%;
+  --purple-5: 265 72% 62%;
+  --purple-6: 264 78% 52%;            /* Purple base */
+  --purple-7: 263 82% 46%;
+  --purple-8: 262 85% 40%;
+  --purple-9: 261 88% 34%;
+  --purple-10: 260 90% 28%;
+  --purple-11: 259 92% 22%;
+  --purple-12: 258 95% 16%;
+
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      SEMANTIC TOKENS — THE ONLY TOKENS COMPONENTS MAY USE
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
@@ -366,4 +381,35 @@
   .link-blue:hover {
     color: hsl(var(--blue-7));
   }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ANIMATIONS
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+    opacity: 0.6;
+  }
+}
+
+.animate-float {
+  animation: float ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
 }
